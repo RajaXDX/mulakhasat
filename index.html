@@ -3,32 +3,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>ملخصات أول متوسط</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <style>
-/* Layout: a study binder — a short header, two subject tabs, then the summary pages stacked like sheets in a folder */
+/* Layout: a study binder — header, a two-way switch (summaries / questions), then sheets or a quiz card */
 :root{
   --bg:#f5f4ef; --surface:#ffffff; --fg:#1d2422; --muted:#5f6a66; --line:#dcdcd2;
   --tajweed:#14463a; --tajweed-soft:#e6efe9; --social:#1f3a6b; --social-soft:#e5ebf6; --gold:#b98a2c;
+  --ok:#1f7a4d; --ok-soft:#e3f3ea; --bad:#b23a2a; --bad-soft:#f8e5e1;
   --display:"Noto Kufi Arabic", "Segoe UI", Tahoma, sans-serif;
   --body:"IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  color-scheme:light;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+@media (prefers-color-scheme: dark){:root{
   --bg:#121615; --surface:#1b2120; --fg:#e8ece9; --muted:#9aa5a1; --line:#2c3533;
-  --tajweed:#6fc2a5; --tajweed-soft:#1b2c27; --social:#8fb0ec; --social-soft:#1b2436; --gold:#d9ae55; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#121615; --surface:#1b2120; --fg:#e8ece9; --muted:#9aa5a1; --line:#2c3533;
-  --tajweed:#6fc2a5; --tajweed-soft:#1b2c27; --social:#8fb0ec; --social-soft:#1b2436; --gold:#d9ae55; color-scheme:dark}
+  --tajweed:#6fc2a5; --tajweed-soft:#1b2c27; --social:#8fb0ec; --social-soft:#1b2436; --gold:#d9ae55;
+  --ok:#5fcf95; --ok-soft:#173026; --bad:#ef8a7a; --bad-soft:#3a1f1b; color-scheme:dark}}
 
 *{box-sizing:border-box}
+html,body{margin:0}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.7}
+img{max-width:100%}
+[hidden]{display:none!important}
 .wrap{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:28px 56px;display:flex;flex-direction:column;gap:22px}
 header{display:flex;flex-direction:column;gap:6px}
 .eyebrow{font-size:.82rem;color:var(--gold);font-weight:600;letter-spacing:.02em}
 h1{font-family:var(--display);font-size:clamp(1.6rem,4.5vw,2.4rem);line-height:1.35;margin:0;text-wrap:balance}
 .lead{margin:0;color:var(--muted);max-width:60ch}
+
+.modes{display:inline-flex;gap:4px;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:999px;align-self:flex-start}
+.mode{appearance:none;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:600;padding:8px 20px;border-radius:999px;cursor:pointer}
+.mode[aria-selected="true"]{background:var(--fg);color:var(--bg)}
 
 .tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:8px}
 .tab{appearance:none;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);border-radius:12px;padding:12px 14px;font:inherit;text-align:right;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -38,17 +44,45 @@ h1{font-family:var(--display);font-size:clamp(1.6rem,4.5vw,2.4rem);line-height:1
 .tab[data-s="t"][aria-selected="true"] b{color:var(--tajweed)}
 .tab[data-s="s"][aria-selected="true"]{border-color:var(--social);background:var(--social-soft)}
 .tab[data-s="s"][aria-selected="true"] b{color:var(--social)}
-.tab:focus-visible,.sheet button:focus-visible,.lb button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 
 .panel{display:flex;flex-direction:column;gap:18px}
-.hint{font-size:.85rem;color:var(--muted);margin:0}
 .sheet{margin:0;display:flex;flex-direction:column;gap:6px}
 .sheet button{all:unset;cursor:zoom-in;display:block;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#fff;box-shadow:0 1px 2px rgb(0 0 0 / .06)}
 .sheet img{display:block;width:100%;height:auto;aspect-ratio:16/9}
 .sheet figcaption{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
 
+/* quiz */
+.quiz{display:flex;flex-direction:column;gap:16px;max-width:720px;width:100%}
+.quiz[data-s="t"]{--acc:var(--tajweed);--acc-soft:var(--tajweed-soft)}
+.quiz[data-s="s"]{--acc:var(--social);--acc-soft:var(--social-soft)}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:.9rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.bar{height:6px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc);width:0;transition:width .25s}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.q{font-family:var(--display);font-size:1.15rem;line-height:1.7;margin:0;text-wrap:balance}
+.opts{display:grid;gap:10px}
+.opt{appearance:none;text-align:right;font:inherit;color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;line-height:1.6}
+.opt:hover:not(:disabled){border-color:var(--acc)}
+.opt:disabled{cursor:default}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft);color:var(--fg)}
+.opt.bad{border-color:var(--bad);background:var(--bad-soft)}
+.fb{margin:0;font-size:.92rem;padding:10px 12px;border-radius:10px;background:var(--acc-soft)}
+.fb b.ok{color:var(--ok)} .fb b.bad{color:var(--bad)}
+.ref{color:var(--muted);font-size:.82rem}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn{appearance:none;font:inherit;font-weight:600;border-radius:10px;padding:10px 20px;cursor:pointer;border:1.5px solid var(--acc);background:var(--acc);color:var(--surface)}
+.btn.ghost{background:transparent;color:var(--acc)}
+.score{font-family:var(--display);font-size:2.6rem;margin:0;color:var(--acc);font-variant-numeric:tabular-nums}
+.review{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
+.review li{font-size:.9rem;padding:10px 12px;border-radius:10px;background:var(--bad-soft)}
+.review li span{display:block;color:var(--ok);font-weight:600}
+.count{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:.9rem;color:var(--muted)}
+.count button{appearance:none;font:inherit;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:4px 14px;cursor:pointer}
+.count button[aria-pressed="true"]{border-color:var(--acc);color:var(--acc);font-weight:600}
+
 .lb{position:fixed;inset:0;background:rgb(10 12 12 / .94);z-index:20;display:flex;flex-direction:column}
-.lb-bar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));color:#fff;font-size:.9rem}
+.lb-bar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));color:#fff;font-size:.9rem;flex-wrap:wrap}
 .lb-bar .grp{display:flex;gap:8px}
 .lb button{appearance:none;border:1px solid rgb(255 255 255 / .3);background:rgb(255 255 255 / .08);color:#fff;border-radius:8px;padding:6px 12px;font:inherit;cursor:pointer}
 .lb-view{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;display:flex;align-items:center;justify-content:center;padding:8px}
@@ -56,27 +90,33 @@ h1{font-family:var(--display);font-size:clamp(1.6rem,4.5vw,2.4rem);line-height:1
 .lb-view.zoom{display:block}
 .lb-view.zoom img{max-width:none;max-height:none;width:1920px}
 @media (max-width:600px){.lb-view.zoom img{width:1600px}}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
 </style>
 </head>
 <body>
-
-<div class="wrap" dir="rtl" lang="ar">
+<div class="wrap">
   <header>
     <div class="eyebrow">الصف الأول المتوسط · الفصل الدراسي الأول</div>
     <h1>ملخصات التجويد والاجتماعيات</h1>
-    <p class="lead">ملخصات مبسّطة للتحديد. اختر المادة، واضغط على أي صفحة لتكبيرها.</p>
+    <p class="lead">ملخصات مبسّطة للتحديد، وأسئلة تختبر فيها نفسك.</p>
   </header>
 
-  <div class="tabs" role="tablist">
-    <button class="tab" role="tab" id="tab-t" data-s="t" aria-selected="true" aria-controls="panel-t"><b>التجويد</b><span>من ص ٩ إلى ص ٢٦ · ١٠ صفحات</span></button>
-    <button class="tab" role="tab" id="tab-s" data-s="s" aria-selected="false" aria-controls="panel-s"><b>الاجتماعيات</b><span>من ص ١٢ إلى ص ٦١ · ١٦ صفحة</span></button>
+  <div class="modes" role="tablist" aria-label="القسم">
+    <button class="mode" role="tab" id="mode-sum" data-m="sum" aria-selected="true">الملخصات</button>
+    <button class="mode" role="tab" id="mode-quiz" data-m="quiz" aria-selected="false">الأسئلة</button>
   </div>
 
-  <section class="panel" id="panel-t" role="tabpanel" aria-labelledby="tab-t"></section>
-  <section class="panel" id="panel-s" role="tabpanel" aria-labelledby="tab-s" hidden></section>
+  <div class="tabs" role="tablist" aria-label="المادة">
+    <button class="tab" role="tab" id="tab-t" data-s="t" aria-selected="true"><b>التجويد</b><span id="sub-t">من ص ٩ إلى ص ٢٦ · ١٠ صفحات</span></button>
+    <button class="tab" role="tab" id="tab-s" data-s="s" aria-selected="false"><b>الاجتماعيات</b><span id="sub-s">من ص ١٢ إلى ص ٦١ · ١٦ صفحة</span></button>
+  </div>
+
+  <section class="panel" id="panel-t"></section>
+  <section class="panel" id="panel-s" hidden></section>
+  <section class="quiz" id="quiz" hidden></section>
 </div>
 
-<div class="lb" id="lb" hidden dir="rtl">
+<div class="lb" id="lb" hidden>
   <div class="lb-bar">
     <span id="lb-label"></span>
     <div class="grp">
@@ -90,39 +130,207 @@ h1{font-family:var(--display);font-size:clamp(1.6rem,4.5vw,2.4rem);line-height:1
 </div>
 
 <script>
-const subjects={t:{name:"التجويد",count:10},s:{name:"الاجتماعيات",count:16}};
+/* بنك الأسئلة: [السؤال, الإجابة الصحيحة, خيار خاطئ, خيار خاطئ, خيار خاطئ, المرجع] */
+const BANK={
+t:[
+["معنى التجويد في اللغة:","التحسين","التلاوة","الحفظ","الترتيل","ص ٩–١٠"],
+["تعريف التجويد اصطلاحًا:","إعطاء كل حرف حقه مخرجًا وصفة","قراءة القرآن بصوت حسن","حفظ القرآن كاملًا","معرفة معاني الآيات","ص ٩–١٠"],
+["المقصود بـ «المَخرج»:","المكان الذي يخرج منه الحرف","طريقة نطق الحرف","صوت الحرف عند الوقف","شكل الحرف في المصحف","ص ٩–١٠"],
+["المقصود بـ «الصفة» مثل الجهر والهمس:","طريقة نطق الحرف","المكان الذي يخرج منه الحرف","عدد حركات المد","موضع الوقف","ص ٩–١٠"],
+["وُضعت قواعد التجويد مكتوبة منذ:","القرن الثاني الهجري","عهد النبي ﷺ","القرن الخامس الهجري","العصر الحديث","ص ٩–١٠"],
+["من أسباب نشأة علم التجويد:","كثرة الفتوحات ودخول الأعاجم في الإسلام","قلة عدد الحفاظ","كثرة المصاحف","انتشار الكتابة","ص ٩–١٠"],
+["يُستمد علم التجويد من:","قراءة الرسول ﷺ","كتب اللغة فقط","اجتهاد كل قارئ","الشعر العربي","ص ٩–١٠"],
+["حكم العلم بالتجويد (معرفة قواعده):","فرض كفاية","فرض عين","سنة","مباح","ص ١١"],
+["حكم العمل بالتجويد (القراءة به):","يتعيّن على كل قادر","فرض كفاية","مستحب فقط","خاص بالأئمة","ص ١١"],
+["من فوائد التجويد:","صون اللسان عن الخطأ في كتاب الله","سرعة ختم القرآن","حفظ الأحاديث","معرفة أسباب النزول","ص ١١"],
+["قائل «والأخذ بالتجويد حتمٌ لازمُ»:","ابن الجزري","أبو عمرو الداني","الإمام عاصم","الإمام الشافعي","ص ١٢"],
+["الفرق بين من يجوّد ومن لا يجوّد بحسب ابن الجزري:","كثرة التدريب وتمرين اللسان","حفظ المتون","جمال الصوت","السن","ص ١٢"],
+["تعريف اللحن:","الخطأ والميل عن الصواب في قراءة القرآن","تحسين الصوت بالقراءة","الوقف على رؤوس الآيات","القراءة بسرعة","ص ١٣–١٧"],
+["ضمّ التاء في ﴿أَنْعَمْتَ﴾ لحن:","جلي","خفي","ليس لحنًا","مكروه فقط","ص ١٣–١٧"],
+["نقص مقدار الغنّة في ﴿كُنْتُمْ﴾ لحن:","خفي","جلي","ليس لحنًا","يغيّر المعنى دائمًا","ص ١٣–١٧"],
+["النطق بالظاء مكان الضاد في ﴿الضَّالِّينَ﴾ لحن:","جلي","خفي","ليس لحنًا","جائز","ص ١٣–١٧"],
+["التساهل في تحقيق همزة ﴿الْحَمْدُ﴾ لحن:","خفي","جلي","ليس لحنًا","يغيّر الحركة","ص ١٣–١٧"],
+["رفع هاء لفظ الجلالة في ﴿الْحَمْدُ لِلَّهِ﴾ لحن:","جلي","خفي","ليس لحنًا","تفخيم صحيح","ص ١٣–١٧"],
+["سُمّي اللحن الجلي بهذا الاسم لأنه:","ظاهر يشترك القرّاء وغيرهم في معرفته","لا يعرفه إلا علماء التجويد","لا يغيّر المعنى","يقع في الوقف فقط","ص ١٣–١٧"],
+["أثر اللحن الخفي على المعنى:","لا يغيّر المعنى لكن ينقص إتقان القراءة","يفسد المعنى دائمًا","يغيّر الحرف","يغيّر الحركة","ص ١٣–١٧"],
+["قاعدة سريعة: إذا تغيّر حرف أو حركة فاللحن:","جلي","خفي","ليس لحنًا","تفخيم","ص ١٣–١٧"],
+["قائل «فأول الأشياء بعد الحفظ معرفةُ اللحن وحسن اللفظ»:","أبو عمرو الداني","ابن الجزري","الإمام عاصم","الإمام مالك","ص ١٦–١٨"],
+["الاستعاذة في اللغة:","الالتجاء والاعتصام والتحصّن","الابتداء","الدعاء","الشكر","ص ١٩–٢٢"],
+["حكم الاستعاذة عند البدء في قراءة القرآن:","سنة","واجبة","فرض كفاية","لا تُشرع","ص ١٩–٢٢"],
+["السورة التي لا تُشرع البسملة في أولها:","التوبة","الأنفال","الفاتحة","الإخلاص","ص ١٩–٢٢"],
+["إذا قطعت القراءة لعارض ضروري كالسعال:","لا تعيد الاستعاذة","تعيد الاستعاذة","تعيد البسملة فقط","تبدأ السورة من أولها","ص ١٩–٢٢"],
+["إذا قطعت القراءة تاركًا لها ثم أردت أن تستأنف:","تعيد الاستعاذة","لا تعيدها","تبسمل فقط","تكمل بلا شيء","ص ١٩–٢٢"],
+["الوجه غير الجائز في البسملة بين سورتين:","وصل آخر السورة بالبسملة ثم الوقف عليها","قطع الجميع","وصل الجميع","قطع الأول ووصل الثاني بالثالث","ص ٢٢–٢٤"],
+["سبب منع الوجه الرابع:","لأن البسملة جُعلت لأول السورة لا لآخرها","لأنه أطول","لأن فيه سكتًا","لأنه خاص بسورة التوبة","ص ٢٢–٢٤"],
+["بين سورتي الأنفال والتوبة ثلاثة أوجه، وكلها:","بلا بسملة","مع البسملة","مع الاستعاذة","بالوصل فقط","ص ٢٤–٢٦"],
+["السكت بين الأنفال والتوبة هو:","سكتة لطيفة بمقدار حركتين دون تنفّس","وقف طويل مع تنفّس","وصل مباشر","قراءة البسملة سرًّا","ص ٢٤–٢٦"],
+["إذا بدأت القراءة من أول سورة التوبة:","أستعيذ فقط","أستعيذ وأبسمل","أبسمل فقط","لا أستعيذ ولا أبسمل","ص ٢١"],
+["إذا أنهيت سورة وبدأت سورة أخرى (غير التوبة):","أبسمل فقط","أستعيذ فقط","أستعيذ وأبسمل","لا شيء","ص ٢١"],
+["إذا بدأت القراءة من وسط السورة فالبسملة:","القارئ مخيّر","واجبة","ممنوعة","تُقرأ مرتين","ص ١٩–٢٢"],
+["من فوائد الاستعاذة:","تطهّر القلب مما يمنع تدبّر القرآن","تطيل القراءة","تحدد موضع الوقف","تغني عن البسملة","ص ٢٦"]
+],
+s:[
+["أقرب الكواكب إلى الشمس:","عطارد","الزهرة","المريخ","الأرض","ص ١٢–١٦"],
+["أكبر كواكب المجموعة الشمسية حجمًا:","المشتري","زحل","نبتون","الأرض","ص ١٢–١٦"],
+["أصغر كواكب المجموعة الشمسية:","عطارد","المريخ","الزهرة","أورانوس","ص ١٢–١٦"],
+["ترتيب الأرض في القرب من الشمس:","الثالث","الثاني","الرابع","الخامس","ص ١٢–١٦"],
+["عدد كواكب المجموعة الشمسية:","ثمانية","سبعة","تسعة","عشرة","ص ١٢–١٦"],
+["أبعد الكواكب عن الشمس:","نبتون","أورانوس","زحل","المشتري","ص ١٢–١٦"],
+["تمثّل الشمس من حجم المجموعة الشمسية نحو:","٩٨٫٦٪","٥٠٪","٧١٪","٢٩٪","ص ١٢–١٦"],
+["المجرة التي تقع فيها مجموعتنا الشمسية:","درب التبانة","أندروميدا","المجرة الكبرى","المجرة القطبية","ص ١٢–١٦"],
+["سبب اعتدال حرارة الأرض مقارنة ببقية الكواكب:","لأن الله جعلها في الوسط، لا قريبة جدًا ولا بعيدة جدًا","لأنها أكبر الكواكب","لأنها لا تدور","لأنها أبعد الكواكب","ص ١٢–١٦"],
+["أول رائد فضاء عربي مسلم:","الأمير سلطان بن سلمان بن عبدالعزيز","نيل أرمسترونغ","يوري غاغارين","عباس بن فرناس","ص ١٧–١٩"],
+["طول القطر القطبي للأرض:","١٢٧١٤ كم","١٢٧٥٧ كم","٤٣ كم","٥١٠ كم","ص ١٧–١٩"],
+["طول القطر الاستوائي للأرض:","١٢٧٥٧ كم","١٢٧١٤ كم","٨٨٥٠ كم","٣٦٠ كم","ص ١٧–١٩"],
+["شكل الأرض الصحيح:","منبعجة عند خط الاستواء ومفلطحة عند القطبين","كرة كاملة الاستدارة","مسطحة","منبعجة عند القطبين","ص ١٧–١٩"],
+["عدد خطوط الطول:","٣٦٠ خطًا","١٨٠ خطًا","٢٤ خطًا","٩٠ خطًا","ص ٢٠–٢٧"],
+["عدد دوائر العرض:","١٨٠ دائرة","٣٦٠ دائرة","٩٠ دائرة","٢٤ دائرة","ص ٢٠–٢٧"],
+["خط الطول الرئيس ودرجته:","خط جرينتش، ودرجته صفر","خط الاستواء، ودرجته صفر","مدار السرطان، ٢٣٫٥°","خط جرينتش، ٩٠°","ص ٢٠–٢٧"],
+["أكبر دوائر العرض:","دائرة الاستواء","مدار السرطان","مدار الجدي","الدائرة القطبية الشمالية","ص ٢٠–٢٧"],
+["الفرق في الوقت بين كل خطّي طول:","٤ دقائق","١٥ دقيقة","ساعة","٦٠ ثانية","ص ٢٠–٢٧"],
+["عدد المناطق الزمنية في العالم:","٢٤ منطقة","١٢ منطقة","٣٦٠ منطقة","١٥ منطقة","ص ٢٠–٢٧"],
+["الأماكن التي يتقدم فيها الوقت:","الواقعة شرق جرينتش","الواقعة غرب جرينتش","الواقعة على خط الاستواء","الواقعة عند القطبين","ص ٢٠–٢٧"],
+["دوائر العرض تفيد في تحديد:","المناطق الحرارية","الزمن","المناطق الزمنية","عمر الحضارات","ص ٢٠–٢٧"],
+["موقع مدار السرطان:","٢٣٫٥° شمالًا","٢٣٫٥° جنوبًا","٦٦٫٥° شمالًا","صفر","ص ٢٣–٢٥"],
+["موقع مدار الجدي:","٢٣٫٥° جنوبًا","٢٣٫٥° شمالًا","٦٦٫٥° جنوبًا","٩٠° جنوبًا","ص ٢٣–٢٥"],
+["تقع المنطقة الحارة بين:","٢٣٫٥° شمالًا و٢٣٫٥° جنوبًا","٦٦٫٥° و٩٠°","٢٣٫٥° و٦٦٫٥°","صفر و١٠°","ص ٢٣–٢٥"],
+["مدة الحركة اليومية للأرض حول محورها:","٢٤ ساعة","١٢ ساعة","٣٦٥ يومًا وربع","٧ أيام","ص ٢٨–٣٤"],
+["ينتج عن الحركة اليومية للأرض:","تعاقب الليل والنهار","الفصول الأربعة","المد والجزر فقط","الزلازل","ص ٢٨–٣٤"],
+["ينتج عن الحركة السنوية للأرض:","الفصول المناخية الأربعة","تعاقب الليل والنهار","اختلاف الزمن","انحراف الرياح","ص ٢٨–٣٤"],
+["اتجاه حركتي الأرض:","من الغرب إلى الشرق، عكس عقارب الساعة","من الشرق إلى الغرب","مع عقارب الساعة","من الشمال إلى الجنوب","ص ٢٨–٣٤"],
+["مقدار ميل محور الأرض:","٢٣٫٥°","٦٦٫٥°","٩٠°","٤٥°","ص ٢٨–٣٤"],
+["في ٢١ يونيو (الانقلاب الصيفي) تكون الشمس عمودية على:","مدار السرطان","مدار الجدي","خط الاستواء","الدائرة القطبية","ص ٢٨–٣٤"],
+["في ٢٢ ديسمبر (الانقلاب الشتوي) تكون الشمس عمودية على:","مدار الجدي","مدار السرطان","خط الاستواء","القطب الشمالي","ص ٢٨–٣٤"],
+["في الاعتدالين (٢١ مارس و٢٣ سبتمبر) تكون الشمس عمودية على:","خط الاستواء","مدار السرطان","مدار الجدي","القطب الجنوبي","ص ٢٨–٣٤"],
+["نسبة الماء من سطح الأرض:","٧١٪","٢٩٪","٥٠٪","٩٠٪","ص ٣٥–٣٨"],
+["أكبر القارات مساحة:","آسيا","إفريقيا","أمريكا الشمالية","أوروبا","ص ٣٥–٣٨"],
+["أصغر القارات:","أستراليا","أوروبا","أمريكا الجنوبية","القارة المتجمدة الجنوبية","ص ٣٥–٣٨"],
+["أكبر المحيطات:","المحيط الهادئ","المحيط الأطلسي","المحيط الهندي","المحيط المتجمد الشمالي","ص ٣٥–٣٨"],
+["أصغر المحيطات:","المحيط المتجمد الشمالي","المحيط الهندي","المحيط الأطلسي","المحيط الهادئ","ص ٣٥–٣٨"],
+["القارة التي يحيط بها المحيطان الأطلسي والهادئ والجنوبي:","أمريكا الجنوبية","آسيا","أوروبا","إفريقيا","ص ٣٥–٣٨"],
+["أعلى قمة على سطح الأرض:","إيفرست في جبال الهمالايا","جبل طويق","جبال الألب","كليمنجارو","ص ٣٥–٣٨"],
+["أخفض منطقة على سطح الأرض:","البحر الميت في غور الأردن","البحر الأحمر","بحر قزوين","الخليج العربي","ص ٣٥–٣٨"],
+["عوامل قيام الحضارات:","الموقع والتضاريس، والمناخ","كثرة الجبال فقط","البرودة الشديدة","قلة السكان","ص ٤٦–٥٤"],
+["أول بيت وُضع للناس على وجه الأرض:","الكعبة المشرفة في مكة المكرمة","المسجد النبوي","المسجد الأقصى","الأهرامات","ص ٤٦–٥٤"],
+["الحضارة التي عُرفت فيها الكتابة الهيروغليفية:","حضارة مصر القديمة","الحضارة الصينية","حضارة بلاد الرافدين","الحضارة النبطية","ص ٤٦–٥٤"],
+["عاصمة الحضارة النبطية:","البتراء","بابل","طيبة","الحِجر","ص ٤٦–٥٤"],
+["قوانين حمورابي من حضارة:","بلاد الرافدين","مصر القديمة","الصين","الأنباط","ص ٤٦–٥٤"],
+["بنى الصينيون سور الصين العظيم من أجل:","صدّ غزو المغول","دفن الموتى","الزراعة","التجارة","ص ٤٦–٥٤"],
+["من شعوب حضارة بلاد الرافدين:","السومريون والأكاديون","الفراعنة","الأنباط","المغول","ص ٤٦–٥٤"],
+["الأساس الأول للحضارة الإسلامية:","الأساس الديني","الأساس اللغوي","الأساس العلمي","الأساس الأخلاقي","ص ٥٥–٥٧"],
+["أول وزير عند العباسيين:","أبو سلمة الخلال","عمرو بن العاص","معاوية","المهدي","ص ٥٥–٥٧"],
+["وزارة التفويض تعني أن:","الخليفة يفوّض الوزير بتصريف أغلب شؤون الدولة","الوزير ينفّذ أوامر الخليفة فقط","الوزير يختار الخليفة","لا يوجد وزير","ص ٥٥–٥٧"],
+["الذي أنشأ الدواوين في الإسلام:","عمر بن الخطاب رضي الله عنه","معاوية رضي الله عنه","أبو بكر رضي الله عنه","علي رضي الله عنه","ص ٥٧–٦٠"],
+["أول من أنشأ نظام البريد في الإسلام:","معاوية رضي الله عنه","عمر بن الخطاب رضي الله عنه","عمرو بن العاص","أبو سلمة الخلال","ص ٥٧–٦٠"],
+["أول من أدخل الشرطة (في مصر):","عمرو بن العاص رضي الله عنه","معاوية رضي الله عنه","عمر بن الخطاب رضي الله عنه","المهدي","ص ٥٧–٦٠"],
+["العسس هم:","رجال يحفظون الأمن ليلًا","جنود الجيش","ولاة الأقاليم","موظفو البريد","ص ٥٧–٦٠"],
+["مهمة بيت المال:","جمع واردات الدولة وتنظيمها والموازنة بين الموارد والمصروفات","الفصل بين الناس في الخصومات","نقل الرسائل","حفظ الأمن ليلًا","ص ٥٧–٦٠"],
+["عدد قوانين حمورابي:","٢٨٢ قانونًا","٢٤ قانونًا","٣٦٠ قانونًا","١٠٠ قانون","ص ٤٦–٥٤"]
+]};
+const NAMES={t:"التجويد",s:"الاجتماعيات"};
+const COUNT={t:10,s:16};
 const ar=n=>n.toLocaleString("ar-SA");
 const pad=n=>String(n).padStart(2,"0");
-for(const [k,s] of Object.entries(subjects)){
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+
+/* الملخصات */
+for(const k of Object.keys(NAMES)){
   const panel=document.getElementById("panel-"+k);
-  for(let i=1;i<=s.count;i++){
+  for(let i=1;i<=COUNT[k];i++){
     const fig=document.createElement("figure");fig.className="sheet";
-    fig.innerHTML=`<button type="button" aria-label="تكبير صفحة ${ar(i)} من ${s.name}"><img src="${k}/${pad(i)}.jpg" width="1920" height="1080" alt="${s.name} – صفحة ${ar(i)}" ${i>2?'loading="lazy"':''}></button><figcaption>صفحة ${ar(i)} من ${ar(s.count)}</figcaption>`;
+    fig.innerHTML=`<button type="button" aria-label="تكبير صفحة ${ar(i)} من ${NAMES[k]}"><img src="${k}/${pad(i)}.jpg" width="1920" height="1080" alt="${NAMES[k]} – صفحة ${ar(i)}" ${i>2?'loading="lazy"':''}></button><figcaption>صفحة ${ar(i)} من ${ar(COUNT[k])}</figcaption>`;
     fig.querySelector("button").onclick=()=>openLb(k,i);
     panel.appendChild(fig);
   }
 }
-const tabs=[...document.querySelectorAll(".tab")];
-function show(k){
-  tabs.forEach(t=>t.setAttribute("aria-selected",t.dataset.s===k));
-  for(const id of Object.keys(subjects)) document.getElementById("panel-"+id).hidden=id!==k;
-  try{localStorage.setItem("subj",k)}catch(e){}
-}
-tabs.forEach(t=>t.onclick=()=>{show(t.dataset.s);window.scrollTo({top:0})});
-const h=location.hash.slice(1);
-let saved=null;try{saved=localStorage.getItem("subj")}catch(e){}
-if(h==="social"||h==="s")show("s");else if(h==="tajweed"||h==="t")show("t");else if(saved&&subjects[saved])show(saved);
 
+let mode="sum", subj="t";
+const tabs=[...document.querySelectorAll(".tab")], modes=[...document.querySelectorAll(".mode")];
+const SUB={sum:{t:"من ص ٩ إلى ص ٢٦ · ١٠ صفحات",s:"من ص ١٢ إلى ص ٦١ · ١٦ صفحة"},quiz:{t:`${ar(BANK.t.length)} سؤالًا`,s:`${ar(BANK.s.length)} سؤالًا`}};
+function update(){
+  modes.forEach(b=>b.setAttribute("aria-selected",b.dataset.m===mode));
+  tabs.forEach(t=>t.setAttribute("aria-selected",t.dataset.s===subj));
+  for(const k of Object.keys(NAMES)){document.getElementById("panel-"+k).hidden=!(mode==="sum"&&k===subj);document.getElementById("sub-"+k).textContent=SUB[mode][k]}
+  document.getElementById("quiz").hidden=mode!=="quiz";
+  if(mode==="quiz")quizStart();
+  store.set("subj",subj);store.set("mode",mode);
+}
+tabs.forEach(t=>t.onclick=()=>{subj=t.dataset.s;update();window.scrollTo({top:0})});
+modes.forEach(b=>b.onclick=()=>{mode=b.dataset.m;update()});
+
+/* الأسئلة */
+const quizEl=document.getElementById("quiz");
+let Q=[],qi=0,score=0,wrong=[],qlen=Number(store.get("qlen"))||10;
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function quizStart(){
+  const bank=BANK[subj];const n=qlen===0?bank.length:Math.min(qlen,bank.length);
+  Q=shuffle(bank).slice(0,n).map(r=>({q:r[0],a:r[1],opts:shuffle(r.slice(1,5)),ref:r[5]}));
+  qi=0;score=0;wrong=[];quizEl.dataset.s=subj;renderQ();
+}
+function lenPicker(){
+  const opts=[[10,"١٠"],[20,"٢٠"],[0,"الكل"]];
+  return `<div class="count">عدد الأسئلة: ${opts.map(([v,l])=>`<button type="button" data-n="${v}" aria-pressed="${qlen===v}">${l}</button>`).join("")}</div>`;
+}
+function bindLen(){quizEl.querySelectorAll(".count button").forEach(b=>b.onclick=()=>{qlen=Number(b.dataset.n);store.set("qlen",qlen);quizStart()})}
+function renderQ(){
+  const it=Q[qi];
+  quizEl.innerHTML=`${lenPicker()}
+  <div class="qhead"><span>${NAMES[subj]} · سؤال ${ar(qi+1)} من ${ar(Q.length)}</span><span>الصحيحة: ${ar(score)}</span></div>
+  <div class="bar"><i style="width:${qi/Q.length*100}%"></i></div>
+  <div class="card">
+    <p class="q">${it.q}</p>
+    <div class="opts">${it.opts.map((o,i)=>`<button type="button" class="opt" data-i="${i}">${o}</button>`).join("")}</div>
+    <p class="fb" hidden></p>
+    <div class="actions" hidden><button type="button" class="btn" id="next">${qi+1<Q.length?"السؤال التالي":"شوف النتيجة"}</button></div>
+  </div>`;
+  bindLen();
+  const btns=[...quizEl.querySelectorAll(".opt")];
+  btns.forEach(b=>b.onclick=()=>{
+    const pick=it.opts[b.dataset.i], right=pick===it.a;
+    btns.forEach(x=>{x.disabled=true;if(it.opts[x.dataset.i]===it.a)x.classList.add("ok")});
+    if(right)score++;else{b.classList.add("bad");wrong.push(it)}
+    const fb=quizEl.querySelector(".fb");fb.hidden=false;
+    fb.innerHTML=right?`<b class="ok">إجابة صحيحة ✓</b> <span class="ref">· راجعها في الملخص ${it.ref}</span>`:`<b class="bad">إجابة خاطئة ✗</b> الصحيح: <b>${it.a}</b> <span class="ref">· راجعها في الملخص ${it.ref}</span>`;
+    quizEl.querySelector(".qhead span:last-child").textContent=`الصحيحة: ${ar(score)}`;
+    quizEl.querySelector(".actions").hidden=false;
+    const nx=document.getElementById("next");nx.focus({preventScroll:true});
+    nx.onclick=()=>{qi++;qi<Q.length?renderQ():renderResult()};
+  });
+}
+function renderResult(){
+  const pct=Math.round(score/Q.length*100);
+  const msg=pct>=90?"ممتاز! أنت جاهز للاختبار":pct>=70?"زين، راجع الأخطاء وتصير ممتاز":pct>=50?"لا بأس، راجع الملخص مرة ثانية":"راجع الملخص وجرب مرة ثانية";
+  quizEl.innerHTML=`${lenPicker()}
+  <div class="bar"><i style="width:100%"></i></div>
+  <div class="card">
+    <div class="ref">النتيجة · ${NAMES[subj]}</div>
+    <p class="score">${ar(score)} / ${ar(Q.length)}</p>
+    <p style="margin:0">${msg}</p>
+    <div class="actions"><button type="button" class="btn" id="again">أسئلة جديدة</button>${wrong.length?`<button type="button" class="btn ghost" id="retry">أعد الأسئلة الخاطئة (${ar(wrong.length)})</button>`:""}</div>
+  </div>
+  ${wrong.length?`<div class="card"><b>الأسئلة اللي أخطأت فيها</b><ul class="review">${wrong.map(w=>`<li>${w.q}<span>${w.a}</span><em class="ref">${w.ref}</em></li>`).join("")}</ul></div>`:""}`;
+  bindLen();
+  document.getElementById("again").onclick=quizStart;
+  const r=document.getElementById("retry");
+  if(r)r.onclick=()=>{Q=shuffle(wrong).map(w=>({...w,opts:shuffle(w.opts)}));qi=0;score=0;wrong=[];renderQ()};
+  window.scrollTo({top:0});
+}
+
+/* البداية */
+const h=location.hash.slice(1);
+const sv=store.get("subj"), sm=store.get("mode");
+if(NAMES[sv])subj=sv; if(sm==="quiz")mode="quiz";
+if(h==="quiz"||h==="questions")mode="quiz";
+if(h==="social"||h==="s")subj="s"; if(h==="tajweed"||h==="t")subj="t";
+update();
+
+/* عارض الصفحات */
 const lb=document.getElementById("lb"),img=document.getElementById("lb-img"),view=document.getElementById("lb-view");
 let cur={k:"t",i:1};
-function render(){
-  const s=subjects[cur.k];
-  img.src=`${cur.k}/${pad(cur.i)}.jpg`;img.alt=`${s.name} – صفحة ${ar(cur.i)}`;
-  document.getElementById("lb-label").textContent=`${s.name} · ${ar(cur.i)} / ${ar(s.count)}`;
-}
+function render(){img.src=`${cur.k}/${pad(cur.i)}.jpg`;img.alt=`${NAMES[cur.k]} – صفحة ${ar(cur.i)}`;document.getElementById("lb-label").textContent=`${NAMES[cur.k]} · ${ar(cur.i)} / ${ar(COUNT[cur.k])}`}
 function openLb(k,i){cur={k,i};view.classList.remove("zoom");document.getElementById("lb-zoom").textContent="تكبير";render();lb.hidden=false;document.body.style.overflow="hidden";document.getElementById("lb-close").focus()}
 function closeLb(){lb.hidden=true;document.body.style.overflow=""}
-function step(d){const n=cur.i+d;if(n<1||n>subjects[cur.k].count)return;cur.i=n;render();view.scrollTo(0,0)}
+function step(d){const n=cur.i+d;if(n<1||n>COUNT[cur.k])return;cur.i=n;render();view.scrollTo(0,0)}
 document.getElementById("lb-close").onclick=closeLb;
 document.getElementById("lb-next").onclick=()=>step(1);
 document.getElementById("lb-prev").onclick=()=>step(-1);
