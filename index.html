@@ -4,36 +4,45 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ملخصات أول متوسط</title>
+<meta name="description" content="دروس مشروحة وتمارين وبطاقات حفظ وأسئلة في التجويد والاجتماعيات للصف الأول المتوسط.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Noto+Kufi+Arabic:wght@600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
 <style>
-/* Layout: a study binder — header, a two-way switch (summaries / questions), then sheets or a quiz card */
+/* Layout: a study binder — header, a four-way switch (lessons / summaries / cards / questions), subject tabs, then the active view */
 :root{
   --bg:#f5f4ef; --surface:#ffffff; --fg:#1d2422; --muted:#5f6a66; --line:#dcdcd2;
-  --tajweed:#14463a; --tajweed-soft:#e6efe9; --social:#1f3a6b; --social-soft:#e5ebf6; --gold:#b98a2c;
+  --tajweed:#14463a; --tajweed-soft:#e6efe9; --social:#1f3a6b; --social-soft:#e5ebf6;
+  --gold:#9a7020; --gold-soft:#f6eedb;
   --ok:#1f7a4d; --ok-soft:#e3f3ea; --bad:#b23a2a; --bad-soft:#f8e5e1;
+  --hot:#f3c9a5; --mild:#f6e7b5; --cold:#d6e6f3; --water:#3d7bd1; --land:#c9a46a;
   --display:"Noto Kufi Arabic", "Segoe UI", Tahoma, sans-serif;
   --body:"IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  --quran:"Amiri", "Traditional Arabic", serif;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){:root{
   --bg:#121615; --surface:#1b2120; --fg:#e8ece9; --muted:#9aa5a1; --line:#2c3533;
-  --tajweed:#6fc2a5; --tajweed-soft:#1b2c27; --social:#8fb0ec; --social-soft:#1b2436; --gold:#d9ae55;
-  --ok:#5fcf95; --ok-soft:#173026; --bad:#ef8a7a; --bad-soft:#3a1f1b; color-scheme:dark}}
+  --tajweed:#6fc2a5; --tajweed-soft:#1b2c27; --social:#8fb0ec; --social-soft:#1b2436;
+  --gold:#d9ae55; --gold-soft:#2b2618;
+  --ok:#5fcf95; --ok-soft:#173026; --bad:#ef8a7a; --bad-soft:#3a1f1b;
+  --hot:#5a3a22; --mild:#4a4224; --cold:#22384a; --water:#4f8fe0; --land:#a8864f; color-scheme:dark}}
 
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.7}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.75}
 img{max-width:100%}
 [hidden]{display:none!important}
-.wrap{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:28px 56px;display:flex;flex-direction:column;gap:22px}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.wrap{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:28px 56px;display:flex;flex-direction:column;gap:20px}
+.wrap[data-s="t"]{--acc:var(--tajweed);--acc-soft:var(--tajweed-soft)}
+.wrap[data-s="s"]{--acc:var(--social);--acc-soft:var(--social-soft)}
 header{display:flex;flex-direction:column;gap:6px}
 .eyebrow{font-size:.82rem;color:var(--gold);font-weight:600;letter-spacing:.02em}
 h1{font-family:var(--display);font-size:clamp(1.6rem,4.5vw,2.4rem);line-height:1.35;margin:0;text-wrap:balance}
 .lead{margin:0;color:var(--muted);max-width:60ch}
 
-.modes{display:inline-flex;gap:4px;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:999px;align-self:flex-start}
-.mode{appearance:none;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:600;padding:8px 20px;border-radius:999px;cursor:pointer}
+.modes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:999px;max-width:560px;width:100%}
+.mode{appearance:none;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:600;font-size:.95rem;padding:8px 4px;border-radius:999px;cursor:pointer;white-space:nowrap}
 .mode[aria-selected="true"]{background:var(--fg);color:var(--bg)}
 
 .tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:8px}
@@ -44,43 +53,160 @@ h1{font-family:var(--display);font-size:clamp(1.6rem,4.5vw,2.4rem);line-height:1
 .tab[data-s="t"][aria-selected="true"] b{color:var(--tajweed)}
 .tab[data-s="s"][aria-selected="true"]{border-color:var(--social);background:var(--social-soft)}
 .tab[data-s="s"][aria-selected="true"] b{color:var(--social)}
-button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 
-.panel{display:flex;flex-direction:column;gap:18px}
-.sheet{margin:0;display:flex;flex-direction:column;gap:6px}
-.sheet button{all:unset;cursor:zoom-in;display:block;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#fff;box-shadow:0 1px 2px rgb(0 0 0 / .06)}
-.sheet img{display:block;width:100%;height:auto;aspect-ratio:16/9}
-.sheet figcaption{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
-
-/* quiz */
-.quiz{display:flex;flex-direction:column;gap:16px;max-width:720px;width:100%}
-.quiz[data-s="t"]{--acc:var(--tajweed);--acc-soft:var(--tajweed-soft)}
-.quiz[data-s="s"]{--acc:var(--social);--acc-soft:var(--social-soft)}
-.qhead{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:.9rem;color:var(--muted);font-variant-numeric:tabular-nums}
 .bar{height:6px;background:var(--line);border-radius:99px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--acc);width:0;transition:width .25s}
+.btn{appearance:none;font:inherit;font-weight:600;border-radius:10px;padding:10px 18px;cursor:pointer;border:1.5px solid var(--acc);background:var(--acc);color:var(--surface)}
+.btn.ghost{background:transparent;color:var(--acc)}
+.btn.done{background:var(--ok);border-color:var(--ok)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.ref{color:var(--muted);font-size:.82rem}
+.chipbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:.9rem;color:var(--muted)}
+.chipbar button{appearance:none;font:inherit;font-size:.88rem;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:4px 14px;cursor:pointer}
+.chipbar button[aria-pressed="true"]{border-color:var(--acc);color:var(--acc);font-weight:600}
+
+/* summaries */
+.panel{display:flex;flex-direction:column;gap:18px}
+.sheet{margin:0;display:flex;flex-direction:column;gap:6px}
+.sheet button,.thumb{all:unset;cursor:zoom-in;display:block;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#fff;box-shadow:0 1px 2px rgb(0 0 0 / .06)}
+.sheet button:focus-visible,.thumb:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.sheet img,.thumb img{display:block;width:100%;height:auto;aspect-ratio:16/9}
+.sheet figcaption{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* lessons list */
+.learn{display:flex;flex-direction:column;gap:14px;max-width:760px;width:100%}
+.prog{display:flex;align-items:center;gap:12px;font-size:.9rem;color:var(--muted)}
+.prog .bar{flex:1}
+.unit{font-size:.82rem;color:var(--gold);font-weight:600;margin-top:6px}
+.lcard{appearance:none;font:inherit;color:var(--fg);text-align:right;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:14px;align-items:center;cursor:pointer;width:100%}
+.lcard:hover{border-color:var(--acc)}
+.lnum{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--acc-soft);color:var(--acc);font-weight:700;font-family:var(--display)}
+.lcard.isdone .lnum{background:var(--ok);color:var(--surface)}
+.lcard b{display:block;font-family:var(--display);font-weight:600;line-height:1.5}
+.lcard small{color:var(--muted)}
+.state{font-size:.8rem;color:var(--muted);white-space:nowrap}
+.isdone .state{color:var(--ok);font-weight:600}
+
+/* lesson page */
+.lesson{display:flex;flex-direction:column;gap:22px}
+.back{appearance:none;border:0;background:none;color:var(--acc);font:inherit;font-weight:600;cursor:pointer;padding:0;align-self:flex-start}
+.lesson h2{font-family:var(--display);font-size:clamp(1.3rem,3.5vw,1.7rem);margin:0;line-height:1.5;text-wrap:balance}
+.lesson h3{font-family:var(--display);font-size:1.1rem;margin:0;color:var(--acc);font-weight:700}
+.lsec{display:flex;flex-direction:column;gap:10px}
+.lsec p{margin:0}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0}
+.box p{margin:4px 0 0}
+.lbl{font-size:.8rem;font-weight:600;color:var(--acc);display:block;margin-bottom:2px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px}
+.tip{background:var(--gold-soft);border-radius:12px;padding:10px 14px;font-size:.95rem}
+.tip>b:first-child{color:var(--gold)}
+.warn{color:var(--bad)}
+.steps{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;counter-reset:st}
+.steps li{counter-increment:st;display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:start}
+.steps li::before{content:counter(st,arabic-indic);width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--acc);color:var(--surface);font-weight:700;font-size:.9rem}
+.dots,.nums{margin:0;padding-inline-start:22px;display:flex;flex-direction:column;gap:4px}
+.nums{list-style:arabic-indic}
+.tw{overflow-x:auto}
+table.cmp{border-collapse:collapse;width:100%;font-size:.92rem;background:var(--surface)}
+table.cmp.wide{min-width:560px}
+.cmp th,.cmp td{border:1px solid var(--line);padding:8px 10px;text-align:right;vertical-align:top}
+.cmp th{background:var(--acc-soft);color:var(--acc);font-weight:600}
+.cmp td:first-child{white-space:nowrap;font-weight:600}
+.ay{font-family:var(--quran);font-size:1.15em}
+.ay.big{font-size:1.3rem;text-align:center;line-height:2}
+.ay small{font-family:var(--body);font-size:.8rem;color:var(--muted)}
+.verse{font-family:var(--quran);font-size:1.2rem;line-height:2.1;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.verse small{font-family:var(--body);font-size:.85rem;color:var(--gold);text-align:center}
+.bayt{display:grid;grid-template-columns:22px 1fr 1fr;gap:4px 24px;align-items:baseline}
+.bayt i{font-style:normal;font-family:var(--body);font-size:.75rem;color:var(--muted)}
+.bayt span:last-child{text-align:left}
+@media (max-width:560px){.bayt{grid-template-columns:22px 1fr}.bayt span:last-child{grid-column:2;text-align:left}}
+.chips{display:flex;flex-wrap:wrap;gap:6px;align-items:center;color:var(--muted)}
+.chip{background:var(--acc-soft);color:var(--acc);border-radius:999px;padding:2px 12px;font-size:.9rem}
+.ways{display:flex;flex-direction:column;gap:8px}
+.way{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between}
+.way>b{flex:1 1 100%;font-size:.92rem}
+.way.no{background:var(--bad-soft)}
+.flowr{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.85rem}
+.flowr span{border:1.5px solid var(--line);border-radius:8px;padding:1px 10px;background:var(--bg)}
+.flowr em{font-style:normal;font-size:.78rem;font-weight:600;border-radius:999px;padding:0 10px}
+.flowr .stop{color:var(--bad);border:1.5px solid var(--bad)}
+.flowr .go{background:var(--acc);color:var(--surface)}
+.way strong{font-size:.85rem;border-radius:999px;padding:2px 12px;color:var(--surface)}
+.way .yes{background:var(--ok)} .way .nope{background:var(--bad)}
+.planets{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px;counter-reset:pl}
+.planets li{counter-increment:pl;display:grid;grid-template-columns:22px 34px auto minmax(0,1fr);gap:10px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:6px 12px}
+.planets li::before{content:counter(pl,arabic-indic);color:var(--muted);font-size:.85rem}
+.planets i{width:var(--s);height:var(--s);border-radius:50%;background:var(--c);justify-self:center}
+.planets small{color:var(--muted)}
+.zones{display:flex;flex-direction:column;gap:3px;border-radius:12px;overflow:hidden}
+.z{padding:8px 14px;font-size:.9rem;color:var(--fg)}
+.z.hot{background:var(--hot);padding-block:14px;font-weight:600}
+.z.mild{background:var(--mild)} .z.cold{background:var(--cold)}
+.split{display:flex;height:34px;border-radius:10px;overflow:hidden;font-size:.85rem;font-weight:600;color:#fff}
+.split span{display:grid;place-items:center}
+.split .w{background:var(--water)} .split .l{background:var(--land)}
+.bars{display:flex;flex-direction:column;gap:6px}
+.brow{display:grid;grid-template-columns:minmax(0,11em) minmax(0,1fr) 3em;gap:10px;align-items:center;font-size:.9rem}
+.track{height:12px;background:var(--line);border-radius:99px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--acc);border-radius:99px}
+.brow b{font-variant-numeric:tabular-nums;text-align:left}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+
+/* exercises */
+.ex{background:var(--surface);border:1.5px solid var(--acc);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.exh{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+.exh b{font-family:var(--display);color:var(--acc)}
+.exs{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.srow{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between;padding-block:10px;border-top:1px solid var(--line)}
+.srow .t{flex:1 1 220px;min-width:0}
+.srow .c{display:flex;gap:6px;flex-wrap:wrap}
+.cbtn{appearance:none;font:inherit;font-size:.88rem;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:4px 14px;cursor:pointer}
+.cbtn:hover:not(:disabled){border-color:var(--acc)}
+.cbtn:disabled{cursor:default;opacity:.55}
+.cbtn.ok{border-color:var(--ok);background:var(--ok-soft);opacity:1;font-weight:600}
+.cbtn.bad{border-color:var(--bad);background:var(--bad-soft);opacity:1;text-decoration:line-through}
+.olist{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none;counter-reset:o}
+.olist li{counter-increment:o;display:grid;grid-template-columns:26px minmax(0,1fr);gap:8px;align-items:center}
+.olist li::before{content:counter(o,arabic-indic);width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--acc-soft);color:var(--acc);font-size:.8rem;font-weight:700}
+.olist li.empty{color:var(--muted)}
+.olist li.empty span{border:1.5px dashed var(--line);border-radius:10px;padding:5px 12px;font-size:.85rem}
+.pool{display:flex;flex-wrap:wrap;gap:8px;padding-top:6px}
+.obtn{appearance:none;font:inherit;font-size:.92rem;text-align:right;border:1.5px solid var(--line);background:var(--bg);color:var(--fg);border-radius:10px;padding:5px 12px;cursor:pointer}
+.olist .obtn{width:100%}
+.obtn.ok{border-color:var(--ok);background:var(--ok-soft)}
+.obtn.bad{border-color:var(--bad);background:var(--bad-soft)}
+.obtn .fix{display:block;font-size:.8rem;color:var(--ok);font-weight:600}
+.exr{margin:6px 0 0;padding:10px 12px;border-radius:10px;background:var(--acc-soft);display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+
+/* flashcards */
+.cards,.quiz{display:flex;flex-direction:column;gap:16px;max-width:720px;width:100%}
+.flash{appearance:none;width:100%;min-height:230px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;cursor:pointer;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:24px;font:inherit;color:var(--fg);transition:transform .25s}
+.flash .front{font-family:var(--display);font-size:1.2rem;line-height:1.7;text-wrap:balance}
+.flash.big .front{font-size:2.4rem;color:var(--acc)}
+.flash .back{color:var(--acc);font-weight:600;font-size:1.15rem;border-top:1px dashed var(--line);padding-top:14px;width:100%}
+.flash .hint{font-size:.82rem;color:var(--muted)}
+.flash.flip{animation:flip .3s}
+@keyframes flip{50%{transform:scaleX(.96) translateY(-3px)}}
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:.9rem;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* quiz */
 .q{font-family:var(--display);font-size:1.15rem;line-height:1.7;margin:0;text-wrap:balance}
 .opts{display:grid;gap:10px}
 .opt{appearance:none;text-align:right;font:inherit;color:var(--fg);background:var(--bg);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;line-height:1.6}
 .opt:hover:not(:disabled){border-color:var(--acc)}
 .opt:disabled{cursor:default}
-.opt.ok{border-color:var(--ok);background:var(--ok-soft);color:var(--fg)}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft)}
 .opt.bad{border-color:var(--bad);background:var(--bad-soft)}
 .fb{margin:0;font-size:.92rem;padding:10px 12px;border-radius:10px;background:var(--acc-soft)}
 .fb b.ok{color:var(--ok)} .fb b.bad{color:var(--bad)}
-.ref{color:var(--muted);font-size:.82rem}
-.actions{display:flex;gap:10px;flex-wrap:wrap}
-.btn{appearance:none;font:inherit;font-weight:600;border-radius:10px;padding:10px 20px;cursor:pointer;border:1.5px solid var(--acc);background:var(--acc);color:var(--surface)}
-.btn.ghost{background:transparent;color:var(--acc)}
 .score{font-family:var(--display);font-size:2.6rem;margin:0;color:var(--acc);font-variant-numeric:tabular-nums}
 .review{display:flex;flex-direction:column;gap:8px;margin:0;padding:0;list-style:none}
 .review li{font-size:.9rem;padding:10px 12px;border-radius:10px;background:var(--bad-soft)}
 .review li span{display:block;color:var(--ok);font-weight:600}
-.count{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:.9rem;color:var(--muted)}
-.count button{appearance:none;font:inherit;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);border-radius:999px;padding:4px 14px;cursor:pointer}
-.count button[aria-pressed="true"]{border-color:var(--acc);color:var(--acc);font-weight:600}
 
+/* lightbox */
 .lb{position:fixed;inset:0;background:rgb(10 12 12 / .94);z-index:20;display:flex;flex-direction:column}
 .lb-bar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));color:#fff;font-size:.9rem;flex-wrap:wrap}
 .lb-bar .grp{display:flex;gap:8px}
@@ -90,29 +216,33 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 .lb-view.zoom{display:block}
 .lb-view.zoom img{max-width:none;max-height:none;width:1920px}
 @media (max-width:600px){.lb-view.zoom img{width:1600px}}
-@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}.flash.flip{animation:none}}
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="wrap" id="wrap" data-s="t">
   <header>
     <div class="eyebrow">الصف الأول المتوسط · الفصل الدراسي الأول</div>
     <h1>ملخصات التجويد والاجتماعيات</h1>
-    <p class="lead">ملخصات مبسّطة للتحديد، وأسئلة تختبر فيها نفسك.</p>
+    <p class="lead">ادرس كل درس مشروح خطوة بخطوة، وحل التمارين، واحفظ بالبطاقات، ثم اختبر نفسك.</p>
   </header>
 
   <div class="modes" role="tablist" aria-label="القسم">
-    <button class="mode" role="tab" id="mode-sum" data-m="sum" aria-selected="true">الملخصات</button>
-    <button class="mode" role="tab" id="mode-quiz" data-m="quiz" aria-selected="false">الأسئلة</button>
+    <button class="mode" role="tab" data-m="learn" aria-selected="true">الدروس</button>
+    <button class="mode" role="tab" data-m="sum" aria-selected="false">الملخصات</button>
+    <button class="mode" role="tab" data-m="cards" aria-selected="false">البطاقات</button>
+    <button class="mode" role="tab" data-m="quiz" aria-selected="false">الأسئلة</button>
   </div>
 
   <div class="tabs" role="tablist" aria-label="المادة">
-    <button class="tab" role="tab" id="tab-t" data-s="t" aria-selected="true"><b>التجويد</b><span id="sub-t">من ص ٩ إلى ص ٢٦ · ١٠ صفحات</span></button>
-    <button class="tab" role="tab" id="tab-s" data-s="s" aria-selected="false"><b>الاجتماعيات</b><span id="sub-s">من ص ١٢ إلى ص ٦١ · ١٦ صفحة</span></button>
+    <button class="tab" role="tab" data-s="t" aria-selected="true"><b>التجويد</b><span id="sub-t"></span></button>
+    <button class="tab" role="tab" data-s="s" aria-selected="false"><b>الاجتماعيات</b><span id="sub-s"></span></button>
   </div>
 
-  <section class="panel" id="panel-t"></section>
+  <section class="learn" id="learn"></section>
+  <section class="panel" id="panel-t" hidden></section>
   <section class="panel" id="panel-s" hidden></section>
+  <section class="cards" id="cards" hidden></section>
   <section class="quiz" id="quiz" hidden></section>
 </div>
 
@@ -129,153 +259,187 @@ button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
   <div class="lb-view" id="lb-view"><img id="lb-img" alt=""></div>
 </div>
 
+<script src="bank.js"></script>
+<script src="lessons.js"></script>
 <script>
-/* بنك الأسئلة: [السؤال, الإجابة الصحيحة, خيار خاطئ, خيار خاطئ, خيار خاطئ, المرجع] */
-const BANK={
-t:[
-["معنى التجويد في اللغة:","التحسين","التلاوة","الحفظ","الترتيل","ص ٩–١٠"],
-["تعريف التجويد اصطلاحًا:","إعطاء كل حرف حقه مخرجًا وصفة","قراءة القرآن بصوت حسن","حفظ القرآن كاملًا","معرفة معاني الآيات","ص ٩–١٠"],
-["المقصود بـ «المَخرج»:","المكان الذي يخرج منه الحرف","طريقة نطق الحرف","صوت الحرف عند الوقف","شكل الحرف في المصحف","ص ٩–١٠"],
-["المقصود بـ «الصفة» مثل الجهر والهمس:","طريقة نطق الحرف","المكان الذي يخرج منه الحرف","عدد حركات المد","موضع الوقف","ص ٩–١٠"],
-["وُضعت قواعد التجويد مكتوبة منذ:","القرن الثاني الهجري","عهد النبي ﷺ","القرن الخامس الهجري","العصر الحديث","ص ٩–١٠"],
-["من أسباب نشأة علم التجويد:","كثرة الفتوحات ودخول الأعاجم في الإسلام","قلة عدد الحفاظ","كثرة المصاحف","انتشار الكتابة","ص ٩–١٠"],
-["يُستمد علم التجويد من:","قراءة الرسول ﷺ","كتب اللغة فقط","اجتهاد كل قارئ","الشعر العربي","ص ٩–١٠"],
-["حكم العلم بالتجويد (معرفة قواعده):","فرض كفاية","فرض عين","سنة","مباح","ص ١١"],
-["حكم العمل بالتجويد (القراءة به):","يتعيّن على كل قادر","فرض كفاية","مستحب فقط","خاص بالأئمة","ص ١١"],
-["من فوائد التجويد:","صون اللسان عن الخطأ في كتاب الله","سرعة ختم القرآن","حفظ الأحاديث","معرفة أسباب النزول","ص ١١"],
-["قائل «والأخذ بالتجويد حتمٌ لازمُ»:","ابن الجزري","أبو عمرو الداني","الإمام عاصم","الإمام الشافعي","ص ١٢"],
-["الفرق بين من يجوّد ومن لا يجوّد بحسب ابن الجزري:","كثرة التدريب وتمرين اللسان","حفظ المتون","جمال الصوت","السن","ص ١٢"],
-["تعريف اللحن:","الخطأ والميل عن الصواب في قراءة القرآن","تحسين الصوت بالقراءة","الوقف على رؤوس الآيات","القراءة بسرعة","ص ١٣–١٧"],
-["ضمّ التاء في ﴿أَنْعَمْتَ﴾ لحن:","جلي","خفي","ليس لحنًا","مكروه فقط","ص ١٣–١٧"],
-["نقص مقدار الغنّة في ﴿كُنْتُمْ﴾ لحن:","خفي","جلي","ليس لحنًا","يغيّر المعنى دائمًا","ص ١٣–١٧"],
-["النطق بالظاء مكان الضاد في ﴿الضَّالِّينَ﴾ لحن:","جلي","خفي","ليس لحنًا","جائز","ص ١٣–١٧"],
-["التساهل في تحقيق همزة ﴿الْحَمْدُ﴾ لحن:","خفي","جلي","ليس لحنًا","يغيّر الحركة","ص ١٣–١٧"],
-["رفع هاء لفظ الجلالة في ﴿الْحَمْدُ لِلَّهِ﴾ لحن:","جلي","خفي","ليس لحنًا","تفخيم صحيح","ص ١٣–١٧"],
-["سُمّي اللحن الجلي بهذا الاسم لأنه:","ظاهر يشترك القرّاء وغيرهم في معرفته","لا يعرفه إلا علماء التجويد","لا يغيّر المعنى","يقع في الوقف فقط","ص ١٣–١٧"],
-["أثر اللحن الخفي على المعنى:","لا يغيّر المعنى لكن ينقص إتقان القراءة","يفسد المعنى دائمًا","يغيّر الحرف","يغيّر الحركة","ص ١٣–١٧"],
-["قاعدة سريعة: إذا تغيّر حرف أو حركة فاللحن:","جلي","خفي","ليس لحنًا","تفخيم","ص ١٣–١٧"],
-["قائل «فأول الأشياء بعد الحفظ معرفةُ اللحن وحسن اللفظ»:","أبو عمرو الداني","ابن الجزري","الإمام عاصم","الإمام مالك","ص ١٦–١٨"],
-["الاستعاذة في اللغة:","الالتجاء والاعتصام والتحصّن","الابتداء","الدعاء","الشكر","ص ١٩–٢٢"],
-["حكم الاستعاذة عند البدء في قراءة القرآن:","سنة","واجبة","فرض كفاية","لا تُشرع","ص ١٩–٢٢"],
-["السورة التي لا تُشرع البسملة في أولها:","التوبة","الأنفال","الفاتحة","الإخلاص","ص ١٩–٢٢"],
-["إذا قطعت القراءة لعارض ضروري كالسعال:","لا تعيد الاستعاذة","تعيد الاستعاذة","تعيد البسملة فقط","تبدأ السورة من أولها","ص ١٩–٢٢"],
-["إذا قطعت القراءة تاركًا لها ثم أردت أن تستأنف:","تعيد الاستعاذة","لا تعيدها","تبسمل فقط","تكمل بلا شيء","ص ١٩–٢٢"],
-["الوجه غير الجائز في البسملة بين سورتين:","وصل آخر السورة بالبسملة ثم الوقف عليها","قطع الجميع","وصل الجميع","قطع الأول ووصل الثاني بالثالث","ص ٢٢–٢٤"],
-["سبب منع الوجه الرابع:","لأن البسملة جُعلت لأول السورة لا لآخرها","لأنه أطول","لأن فيه سكتًا","لأنه خاص بسورة التوبة","ص ٢٢–٢٤"],
-["بين سورتي الأنفال والتوبة ثلاثة أوجه، وكلها:","بلا بسملة","مع البسملة","مع الاستعاذة","بالوصل فقط","ص ٢٤–٢٦"],
-["السكت بين الأنفال والتوبة هو:","سكتة لطيفة بمقدار حركتين دون تنفّس","وقف طويل مع تنفّس","وصل مباشر","قراءة البسملة سرًّا","ص ٢٤–٢٦"],
-["إذا بدأت القراءة من أول سورة التوبة:","أستعيذ فقط","أستعيذ وأبسمل","أبسمل فقط","لا أستعيذ ولا أبسمل","ص ٢١"],
-["إذا أنهيت سورة وبدأت سورة أخرى (غير التوبة):","أبسمل فقط","أستعيذ فقط","أستعيذ وأبسمل","لا شيء","ص ٢١"],
-["إذا بدأت القراءة من وسط السورة فالبسملة:","القارئ مخيّر","واجبة","ممنوعة","تُقرأ مرتين","ص ١٩–٢٢"],
-["من فوائد الاستعاذة:","تطهّر القلب مما يمنع تدبّر القرآن","تطيل القراءة","تحدد موضع الوقف","تغني عن البسملة","ص ٢٦"]
-],
-s:[
-["أقرب الكواكب إلى الشمس:","عطارد","الزهرة","المريخ","الأرض","ص ١٢–١٦"],
-["أكبر كواكب المجموعة الشمسية حجمًا:","المشتري","زحل","نبتون","الأرض","ص ١٢–١٦"],
-["أصغر كواكب المجموعة الشمسية:","عطارد","المريخ","الزهرة","أورانوس","ص ١٢–١٦"],
-["ترتيب الأرض في القرب من الشمس:","الثالث","الثاني","الرابع","الخامس","ص ١٢–١٦"],
-["عدد كواكب المجموعة الشمسية:","ثمانية","سبعة","تسعة","عشرة","ص ١٢–١٦"],
-["أبعد الكواكب عن الشمس:","نبتون","أورانوس","زحل","المشتري","ص ١٢–١٦"],
-["تمثّل الشمس من حجم المجموعة الشمسية نحو:","٩٨٫٦٪","٥٠٪","٧١٪","٢٩٪","ص ١٢–١٦"],
-["المجرة التي تقع فيها مجموعتنا الشمسية:","درب التبانة","أندروميدا","المجرة الكبرى","المجرة القطبية","ص ١٢–١٦"],
-["سبب اعتدال حرارة الأرض مقارنة ببقية الكواكب:","لأن الله جعلها في الوسط، لا قريبة جدًا ولا بعيدة جدًا","لأنها أكبر الكواكب","لأنها لا تدور","لأنها أبعد الكواكب","ص ١٢–١٦"],
-["أول رائد فضاء عربي مسلم:","الأمير سلطان بن سلمان بن عبدالعزيز","نيل أرمسترونغ","يوري غاغارين","عباس بن فرناس","ص ١٧–١٩"],
-["طول القطر القطبي للأرض:","١٢٧١٤ كم","١٢٧٥٧ كم","٤٣ كم","٥١٠ كم","ص ١٧–١٩"],
-["طول القطر الاستوائي للأرض:","١٢٧٥٧ كم","١٢٧١٤ كم","٨٨٥٠ كم","٣٦٠ كم","ص ١٧–١٩"],
-["شكل الأرض الصحيح:","منبعجة عند خط الاستواء ومفلطحة عند القطبين","كرة كاملة الاستدارة","مسطحة","منبعجة عند القطبين","ص ١٧–١٩"],
-["عدد خطوط الطول:","٣٦٠ خطًا","١٨٠ خطًا","٢٤ خطًا","٩٠ خطًا","ص ٢٠–٢٧"],
-["عدد دوائر العرض:","١٨٠ دائرة","٣٦٠ دائرة","٩٠ دائرة","٢٤ دائرة","ص ٢٠–٢٧"],
-["خط الطول الرئيس ودرجته:","خط جرينتش، ودرجته صفر","خط الاستواء، ودرجته صفر","مدار السرطان، ٢٣٫٥°","خط جرينتش، ٩٠°","ص ٢٠–٢٧"],
-["أكبر دوائر العرض:","دائرة الاستواء","مدار السرطان","مدار الجدي","الدائرة القطبية الشمالية","ص ٢٠–٢٧"],
-["الفرق في الوقت بين كل خطّي طول:","٤ دقائق","١٥ دقيقة","ساعة","٦٠ ثانية","ص ٢٠–٢٧"],
-["عدد المناطق الزمنية في العالم:","٢٤ منطقة","١٢ منطقة","٣٦٠ منطقة","١٥ منطقة","ص ٢٠–٢٧"],
-["الأماكن التي يتقدم فيها الوقت:","الواقعة شرق جرينتش","الواقعة غرب جرينتش","الواقعة على خط الاستواء","الواقعة عند القطبين","ص ٢٠–٢٧"],
-["دوائر العرض تفيد في تحديد:","المناطق الحرارية","الزمن","المناطق الزمنية","عمر الحضارات","ص ٢٠–٢٧"],
-["موقع مدار السرطان:","٢٣٫٥° شمالًا","٢٣٫٥° جنوبًا","٦٦٫٥° شمالًا","صفر","ص ٢٣–٢٥"],
-["موقع مدار الجدي:","٢٣٫٥° جنوبًا","٢٣٫٥° شمالًا","٦٦٫٥° جنوبًا","٩٠° جنوبًا","ص ٢٣–٢٥"],
-["تقع المنطقة الحارة بين:","٢٣٫٥° شمالًا و٢٣٫٥° جنوبًا","٦٦٫٥° و٩٠°","٢٣٫٥° و٦٦٫٥°","صفر و١٠°","ص ٢٣–٢٥"],
-["مدة الحركة اليومية للأرض حول محورها:","٢٤ ساعة","١٢ ساعة","٣٦٥ يومًا وربع","٧ أيام","ص ٢٨–٣٤"],
-["ينتج عن الحركة اليومية للأرض:","تعاقب الليل والنهار","الفصول الأربعة","المد والجزر فقط","الزلازل","ص ٢٨–٣٤"],
-["ينتج عن الحركة السنوية للأرض:","الفصول المناخية الأربعة","تعاقب الليل والنهار","اختلاف الزمن","انحراف الرياح","ص ٢٨–٣٤"],
-["اتجاه حركتي الأرض:","من الغرب إلى الشرق، عكس عقارب الساعة","من الشرق إلى الغرب","مع عقارب الساعة","من الشمال إلى الجنوب","ص ٢٨–٣٤"],
-["مقدار ميل محور الأرض:","٢٣٫٥°","٦٦٫٥°","٩٠°","٤٥°","ص ٢٨–٣٤"],
-["في ٢١ يونيو (الانقلاب الصيفي) تكون الشمس عمودية على:","مدار السرطان","مدار الجدي","خط الاستواء","الدائرة القطبية","ص ٢٨–٣٤"],
-["في ٢٢ ديسمبر (الانقلاب الشتوي) تكون الشمس عمودية على:","مدار الجدي","مدار السرطان","خط الاستواء","القطب الشمالي","ص ٢٨–٣٤"],
-["في الاعتدالين (٢١ مارس و٢٣ سبتمبر) تكون الشمس عمودية على:","خط الاستواء","مدار السرطان","مدار الجدي","القطب الجنوبي","ص ٢٨–٣٤"],
-["نسبة الماء من سطح الأرض:","٧١٪","٢٩٪","٥٠٪","٩٠٪","ص ٣٥–٣٨"],
-["أكبر القارات مساحة:","آسيا","إفريقيا","أمريكا الشمالية","أوروبا","ص ٣٥–٣٨"],
-["أصغر القارات:","أستراليا","أوروبا","أمريكا الجنوبية","القارة المتجمدة الجنوبية","ص ٣٥–٣٨"],
-["أكبر المحيطات:","المحيط الهادئ","المحيط الأطلسي","المحيط الهندي","المحيط المتجمد الشمالي","ص ٣٥–٣٨"],
-["أصغر المحيطات:","المحيط المتجمد الشمالي","المحيط الهندي","المحيط الأطلسي","المحيط الهادئ","ص ٣٥–٣٨"],
-["القارة التي يحيط بها المحيطان الأطلسي والهادئ والجنوبي:","أمريكا الجنوبية","آسيا","أوروبا","إفريقيا","ص ٣٥–٣٨"],
-["أعلى قمة على سطح الأرض:","إيفرست في جبال الهمالايا","جبل طويق","جبال الألب","كليمنجارو","ص ٣٥–٣٨"],
-["أخفض منطقة على سطح الأرض:","البحر الميت في غور الأردن","البحر الأحمر","بحر قزوين","الخليج العربي","ص ٣٥–٣٨"],
-["عوامل قيام الحضارات:","الموقع والتضاريس، والمناخ","كثرة الجبال فقط","البرودة الشديدة","قلة السكان","ص ٤٦–٥٤"],
-["أول بيت وُضع للناس على وجه الأرض:","الكعبة المشرفة في مكة المكرمة","المسجد النبوي","المسجد الأقصى","الأهرامات","ص ٤٦–٥٤"],
-["الحضارة التي عُرفت فيها الكتابة الهيروغليفية:","حضارة مصر القديمة","الحضارة الصينية","حضارة بلاد الرافدين","الحضارة النبطية","ص ٤٦–٥٤"],
-["عاصمة الحضارة النبطية:","البتراء","بابل","طيبة","الحِجر","ص ٤٦–٥٤"],
-["قوانين حمورابي من حضارة:","بلاد الرافدين","مصر القديمة","الصين","الأنباط","ص ٤٦–٥٤"],
-["بنى الصينيون سور الصين العظيم من أجل:","صدّ غزو المغول","دفن الموتى","الزراعة","التجارة","ص ٤٦–٥٤"],
-["من شعوب حضارة بلاد الرافدين:","السومريون والأكاديون","الفراعنة","الأنباط","المغول","ص ٤٦–٥٤"],
-["الأساس الأول للحضارة الإسلامية:","الأساس الديني","الأساس اللغوي","الأساس العلمي","الأساس الأخلاقي","ص ٥٥–٥٧"],
-["أول وزير عند العباسيين:","أبو سلمة الخلال","عمرو بن العاص","معاوية","المهدي","ص ٥٥–٥٧"],
-["وزارة التفويض تعني أن:","الخليفة يفوّض الوزير بتصريف أغلب شؤون الدولة","الوزير ينفّذ أوامر الخليفة فقط","الوزير يختار الخليفة","لا يوجد وزير","ص ٥٥–٥٧"],
-["الذي أنشأ الدواوين في الإسلام:","عمر بن الخطاب رضي الله عنه","معاوية رضي الله عنه","أبو بكر رضي الله عنه","علي رضي الله عنه","ص ٥٧–٦٠"],
-["أول من أنشأ نظام البريد في الإسلام:","معاوية رضي الله عنه","عمر بن الخطاب رضي الله عنه","عمرو بن العاص","أبو سلمة الخلال","ص ٥٧–٦٠"],
-["أول من أدخل الشرطة (في مصر):","عمرو بن العاص رضي الله عنه","معاوية رضي الله عنه","عمر بن الخطاب رضي الله عنه","المهدي","ص ٥٧–٦٠"],
-["العسس هم:","رجال يحفظون الأمن ليلًا","جنود الجيش","ولاة الأقاليم","موظفو البريد","ص ٥٧–٦٠"],
-["مهمة بيت المال:","جمع واردات الدولة وتنظيمها والموازنة بين الموارد والمصروفات","الفصل بين الناس في الخصومات","نقل الرسائل","حفظ الأمن ليلًا","ص ٥٧–٦٠"],
-["عدد قوانين حمورابي:","٢٨٢ قانونًا","٢٤ قانونًا","٣٦٠ قانونًا","١٠٠ قانون","ص ٤٦–٥٤"]
-]};
 const NAMES={t:"التجويد",s:"الاجتماعيات"};
 const COUNT={t:10,s:16};
 const ar=n=>n.toLocaleString("ar-SA");
 const pad=n=>String(n).padStart(2,"0");
+const $=id=>document.getElementById(id);
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const bankOf=(k,lesson)=>BANK[k].map((r,i)=>({r,i})).filter(x=>lesson==null||LESSON_OF[k](x.i)===lesson).map(x=>x.r);
+let done={t:[],s:[]};try{const d=JSON.parse(store.get("done")||"null");if(d&&d.t&&d.s)done=d}catch(e){}
+const saveDone=()=>store.set("done",JSON.stringify(done));
 
-/* الملخصات */
+let mode="learn", subj="t", openLesson=null, quizLesson=null, cardDeck="all";
+const tabs=[...document.querySelectorAll(".tab")], modes=[...document.querySelectorAll(".mode")];
+
+function subtitle(k){
+  const L=LESSONS[k].length;
+  if(mode==="learn")return `${ar(L)} ${L>2&&L<11?"دروس":"درس"} · خلصت ${ar(done[k].length)}`;
+  if(mode==="sum")return k==="t"?"من ص ٩ إلى ص ٢٦ · ١٠ صفحات":"من ص ١٢ إلى ص ٦١ · ١٦ صفحة";
+  if(mode==="cards")return `${ar(BANK[k].length+(k==="s"?NUMS.length:0))} بطاقة`;
+  return `${ar(BANK[k].length)} سؤالًا`;
+}
+function update(){
+  $("wrap").dataset.s=subj;
+  modes.forEach(b=>b.setAttribute("aria-selected",b.dataset.m===mode));
+  tabs.forEach(t=>t.setAttribute("aria-selected",t.dataset.s===subj));
+  for(const k of Object.keys(NAMES)){$("panel-"+k).hidden=!(mode==="sum"&&k===subj);$("sub-"+k).textContent=subtitle(k)}
+  $("learn").hidden=mode!=="learn";$("cards").hidden=mode!=="cards";$("quiz").hidden=mode!=="quiz";
+  if(mode==="learn")renderLearn();
+  if(mode==="cards")cardsStart();
+  if(mode==="quiz")quizStart();
+  store.set("subj",subj);store.set("mode",mode);
+}
+function go(m){mode=m;update();window.scrollTo({top:0})}
+tabs.forEach(t=>t.onclick=()=>{subj=t.dataset.s;openLesson=null;quizLesson=null;cardDeck="all";update();window.scrollTo({top:0})});
+modes.forEach(b=>b.onclick=()=>{if(b.dataset.m!=="quiz")quizLesson=null;if(b.dataset.m==="learn")openLesson=null;if(b.dataset.m!=="cards")cardDeck="all";go(b.dataset.m)});
+
+/* ===== الملخصات ===== */
 for(const k of Object.keys(NAMES)){
-  const panel=document.getElementById("panel-"+k);
+  const panel=$("panel-"+k);
   for(let i=1;i<=COUNT[k];i++){
     const fig=document.createElement("figure");fig.className="sheet";
-    fig.innerHTML=`<button type="button" aria-label="تكبير صفحة ${ar(i)} من ${NAMES[k]}"><img src="${k}/${pad(i)}.jpg" width="1920" height="1080" alt="${NAMES[k]} – صفحة ${ar(i)}" ${i>2?'loading="lazy"':''}></button><figcaption>صفحة ${ar(i)} من ${ar(COUNT[k])}</figcaption>`;
+    fig.innerHTML=`<button type="button" aria-label="تكبير صفحة ${ar(i)} من ${NAMES[k]}"><img src="${k}/${pad(i)}.jpg" width="1920" height="1080" alt="${NAMES[k]} – صفحة ${ar(i)}" loading="lazy"></button><figcaption>صفحة ${ar(i)} من ${ar(COUNT[k])}</figcaption>`;
     fig.querySelector("button").onclick=()=>openLb(k,i);
     panel.appendChild(fig);
   }
 }
 
-let mode="sum", subj="t";
-const tabs=[...document.querySelectorAll(".tab")], modes=[...document.querySelectorAll(".mode")];
-const SUB={sum:{t:"من ص ٩ إلى ص ٢٦ · ١٠ صفحات",s:"من ص ١٢ إلى ص ٦١ · ١٦ صفحة"},quiz:{t:`${ar(BANK.t.length)} سؤالًا`,s:`${ar(BANK.s.length)} سؤالًا`}};
-function update(){
-  modes.forEach(b=>b.setAttribute("aria-selected",b.dataset.m===mode));
-  tabs.forEach(t=>t.setAttribute("aria-selected",t.dataset.s===subj));
-  for(const k of Object.keys(NAMES)){document.getElementById("panel-"+k).hidden=!(mode==="sum"&&k===subj);document.getElementById("sub-"+k).textContent=SUB[mode][k]}
-  document.getElementById("quiz").hidden=mode!=="quiz";
-  if(mode==="quiz")quizStart();
-  store.set("subj",subj);store.set("mode",mode);
+/* ===== الدروس ===== */
+const learnEl=$("learn");
+function renderLearn(){
+  if(openLesson!=null)return renderLesson(openLesson);
+  const Ls=LESSONS[subj], d=done[subj].length;
+  let html=`<div class="prog"><span>تقدّمك في ${NAMES[subj]}</span><div class="bar"><i style="width:${d/Ls.length*100}%"></i></div><span>${ar(d)} / ${ar(Ls.length)}</span></div>`;
+  let unit=null;
+  Ls.forEach((L,i)=>{
+    if(L.unit&&L.unit!==unit){unit=L.unit;html+=`<div class="unit">${unit}</div>`}
+    const isd=done[subj].includes(i);
+    html+=`<button type="button" class="lcard${isd?" isdone":""}" data-i="${i}"><span class="lnum">${isd?"✓":ar(i+1)}</span><span><b>${L.title}</b><small>الدرس ${ar(i+1)} · ${L.pages} · ${ar(L.ex.length)} ${L.ex.length>1?"تمارين":"تمرين"}</small></span><span class="state">${isd?"خلصته":"ابدأ ←"}</span></button>`;
+  });
+  learnEl.innerHTML=html;
+  learnEl.querySelectorAll(".lcard").forEach(b=>b.onclick=()=>{openLesson=Number(b.dataset.i);renderLearn();window.scrollTo({top:0})});
 }
-tabs.forEach(t=>t.onclick=()=>{subj=t.dataset.s;update();window.scrollTo({top:0})});
-modes.forEach(b=>b.onclick=()=>{mode=b.dataset.m;update()});
+function renderLesson(i){
+  const Ls=LESSONS[subj], L=Ls[i], isd=done[subj].includes(i);
+  learnEl.innerHTML=`<article class="lesson">
+    <button type="button" class="back" id="lback">→ كل الدروس</button>
+    <div><div class="ref">${L.unit?L.unit+" · ":""}الدرس ${ar(i+1)} من ${ar(Ls.length)} · ${L.pages}</div><h2>${L.title}</h2></div>
+    ${L.html}
+    <section class="lsec"><h3>تمارين الدرس</h3><div id="exs" class="lsec"></div></section>
+    <section class="lsec"><h3>صفحات الملخص لهذا الدرس</h3><div class="thumbs">${L.sheets.map(p=>`<button type="button" class="thumb" data-p="${p}" aria-label="تكبير صفحة ${ar(p)}"><img src="${subj}/${pad(p)}.jpg" width="1920" height="1080" alt="صفحة ${ar(p)} من ملخص ${NAMES[subj]}" loading="lazy"></button>`).join("")}</div></section>
+    <div class="card"><b>بعد ما تخلص الدرس</b>
+      <div class="actions">
+        <button type="button" class="btn" id="lquiz">اختبر نفسك في الدرس (${ar(bankOf(subj,i).length)} سؤال)</button>
+        <button type="button" class="btn ghost" id="lcards">راجع بالبطاقات</button>
+        <button type="button" class="btn ${isd?"done":"ghost"}" id="ldone">${isd?"✓ خلصت الدرس":"علّم الدرس كمكتمل"}</button>
+      </div></div>
+    <div class="actions">${i>0?`<button type="button" class="btn ghost" id="lprev">→ الدرس السابق</button>`:""}${i<Ls.length-1?`<button type="button" class="btn ghost" id="lnext">الدرس التالي ←</button>`:""}</div>
+  </article>`;
+  const exHost=$("exs");
+  L.ex.forEach(ex=>{const d=document.createElement("div");d.className="ex";exHost.appendChild(d);(ex.type==="order"?exOrder:exSort)(ex,d)});
+  learnEl.querySelectorAll(".thumb").forEach(b=>b.onclick=()=>openLb(subj,Number(b.dataset.p)));
+  $("lback").onclick=()=>{openLesson=null;renderLearn();window.scrollTo({top:0})};
+  $("lquiz").onclick=()=>{quizLesson=i;go("quiz")};
+  $("lcards").onclick=()=>{cardDeck=String(i);go("cards")};
+  $("ldone").onclick=()=>{const a=done[subj];const p=a.indexOf(i);p>=0?a.splice(p,1):a.push(i);saveDone();const y=p<0;const b=$("ldone");b.className="btn "+(y?"done":"ghost");b.textContent=y?"✓ خلصت الدرس":"علّم الدرس كمكتمل";$("sub-"+subj).textContent=subtitle(subj)};
+  if($("lprev"))$("lprev").onclick=()=>{openLesson=i-1;renderLearn();window.scrollTo({top:0})};
+  if($("lnext"))$("lnext").onclick=()=>{openLesson=i+1;renderLearn();window.scrollTo({top:0})};
+}
 
-/* الأسئلة */
-const quizEl=document.getElementById("quiz");
+/* تمرين تصنيف: لكل عبارة اختر التصنيف الصحيح */
+function exSort(ex,host){
+  const items=shuffle(ex.items);let ok=0,n=0;
+  host.innerHTML=`<div class="exh"><b>تمرين: ${ex.title}</b><span class="exs"></span></div>`+
+    items.map((it,i)=>`<div class="srow"><span class="t">${it[0]}</span><span class="c">${ex.choices.map((c,j)=>`<button type="button" class="cbtn" data-i="${i}" data-j="${j}">${c}</button>`).join("")}</span></div>`).join("")+`<div class="exr" hidden></div>`;
+  const sc=host.querySelector(".exs");const upd=()=>sc.textContent=`صح ${ar(ok)} من ${ar(items.length)}`;upd();
+  host.querySelectorAll(".cbtn").forEach(b=>b.onclick=()=>{
+    const it=items[b.dataset.i],pick=ex.choices[b.dataset.j];
+    const row=[...host.querySelectorAll(`.cbtn[data-i="${b.dataset.i}"]`)];
+    row.forEach(x=>{x.disabled=true;if(ex.choices[x.dataset.j]===it[1])x.classList.add("ok")});
+    if(pick===it[1])ok++;else b.classList.add("bad");
+    n++;upd();
+    if(n===items.length){const r=host.querySelector(".exr");r.hidden=false;r.innerHTML=`<span>${ok===n?"ممتاز! كلها صح 🎉":`خلصت التمرين: ${ar(ok)} صح من ${ar(n)}`}</span><button type="button" class="btn ghost">أعد التمرين</button>`;r.querySelector("button").onclick=()=>exSort(ex,host)}
+  });
+}
+/* تمرين ترتيب: اضغط العناصر بالترتيب الصحيح */
+function exOrder(ex,host){
+  const pool=shuffle(ex.items.map((_,i)=>i));const ans=[];let checked=false;
+  const draw=()=>{
+    host.innerHTML=`<div class="exh"><b>تمرين: ${ex.title}</b><span class="exs">${checked?"":"اضغط بالترتيب، واضغط على أي اختيار عشان ترجّعه"}</span></div>
+      <ol class="olist">${ex.items.map((_,p)=>{const v=ans[p];if(v==null)return `<li class="empty"><span>—</span></li>`;const cls=checked?(v===p?" ok":" bad"):"";return `<li><button type="button" class="obtn${cls}" data-a="${p}" ${checked?"disabled":""}>${ex.items[v]}${checked&&v!==p?`<span class="fix">الصحيح: ${ex.items[p]}</span>`:""}</button></li>`}).join("")}</ol>
+      <div class="pool">${pool.filter(v=>!ans.includes(v)).map(v=>`<button type="button" class="obtn" data-v="${v}">${ex.items[v]}</button>`).join("")}</div><div class="exr" hidden></div>`;
+    host.querySelectorAll(".pool .obtn").forEach(b=>b.onclick=()=>{ans.push(Number(b.dataset.v));if(ans.length===ex.items.length)checked=true;draw()});
+    host.querySelectorAll(".olist .obtn").forEach(b=>b.onclick=()=>{ans.splice(Number(b.dataset.a),1);draw()});
+    if(checked){const ok=ans.filter((v,p)=>v===p).length;const r=host.querySelector(".exr");r.hidden=false;r.innerHTML=`<span>${ok===ans.length?"ممتاز! الترتيب صحيح 🎉":`${ar(ok)} في مكانها الصحيح من ${ar(ans.length)}`}</span><button type="button" class="btn ghost">أعد التمرين</button>`;r.querySelector("button").onclick=()=>exOrder(ex,host)}
+  };draw();
+}
+
+/* ===== البطاقات ===== */
+const cardsEl=$("cards");let CQ=[],known=0,ctotal=0,showBack=false;
+function deckChips(){
+  const opts=[["all","كل المادة"],...LESSONS[subj].map((L,i)=>[String(i),`الدرس ${ar(i+1)}`])];
+  if(subj==="s")opts.push(["nums","أرقام لازم تحفظها"]);
+  return `<div class="chipbar">${opts.map(([v,l])=>`<button type="button" data-d="${v}" aria-pressed="${cardDeck===v}">${l}</button>`).join("")}</div>`;
+}
+function cardsStart(){
+  let deck;
+  if(cardDeck==="nums")deck=NUMS.map(([n,m])=>({f:n,b:m,big:true}));
+  else deck=bankOf(subj,cardDeck==="all"?null:Number(cardDeck)).map(r=>({f:r[0],b:r[1]}));
+  CQ=shuffle(deck);known=0;ctotal=deck.length;showBack=false;renderCard();
+}
+function renderCard(){
+  const title=cardDeck==="nums"?"أرقام لازم تحفظها":cardDeck==="all"?`كل ${NAMES[subj]}`:LESSONS[subj][Number(cardDeck)].title;
+  if(!CQ.length){
+    cardsEl.innerHTML=`${deckChips()}<div class="bar"><i style="width:100%"></i></div><div class="card"><div class="ref">${title}</div><p class="score">${ar(ctotal)} / ${ar(ctotal)}</p><p style="margin:0">خلصت كل البطاقات! كل اللي ما عرفتها رجعت لك لين حفظتها.</p><div class="actions"><button type="button" class="btn" id="cagain">ابدأ من جديد</button><button type="button" class="btn ghost" id="cquiz">اختبر نفسك</button></div></div>`;
+    bindDeck();$("cagain").onclick=cardsStart;$("cquiz").onclick=()=>{quizLesson=/^\d+$/.test(cardDeck)?Number(cardDeck):null;go("quiz")};return;
+  }
+  const c=CQ[0];
+  cardsEl.innerHTML=`${deckChips()}
+    <div class="qhead"><span>${title}</span><span>حفظت ${ar(known)} من ${ar(ctotal)} · باقي ${ar(CQ.length)}</span></div>
+    <div class="bar"><i style="width:${known/ctotal*100}%"></i></div>
+    <button type="button" class="flash${c.big?" big":""}" id="flash" aria-live="polite">
+      <span class="front">${c.f}</span>
+      ${showBack?`<span class="back">${c.b}</span>`:`<span class="hint">${c.big?"وش يعني هذا الرقم؟ ":"فكّر في الجواب، "}ثم اضغط عشان تشوفه</span>`}
+    </button>
+    <div class="actions" ${showBack?"":"hidden"}><button type="button" class="btn done" id="cknow">✓ عرفتها</button><button type="button" class="btn ghost" id="cagainone">راجعها مرة ثانية</button></div>`;
+  bindDeck();
+  $("flash").onclick=()=>{if(showBack)return;showBack=true;renderCard();$("flash").classList.add("flip")};
+  if(showBack){
+    $("cknow").onclick=()=>{CQ.shift();known++;showBack=false;renderCard()};
+    $("cagainone").onclick=()=>{CQ.push(CQ.shift());showBack=false;renderCard()};
+  }
+}
+function bindDeck(){cardsEl.querySelectorAll(".chipbar button").forEach(b=>b.onclick=()=>{cardDeck=b.dataset.d;cardsStart()})}
+
+/* ===== الأسئلة ===== */
+const quizEl=$("quiz");
 let Q=[],qi=0,score=0,wrong=[],qlen=Number(store.get("qlen"))||10;
-const shuffle=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 function quizStart(){
-  const bank=BANK[subj];const n=qlen===0?bank.length:Math.min(qlen,bank.length);
+  const bank=bankOf(subj,quizLesson);const n=qlen===0?bank.length:Math.min(qlen,bank.length);
   Q=shuffle(bank).slice(0,n).map(r=>({q:r[0],a:r[1],opts:shuffle(r.slice(1,5)),ref:r[5]}));
-  qi=0;score=0;wrong=[];quizEl.dataset.s=subj;renderQ();
+  qi=0;score=0;wrong=[];renderQ();
 }
-function lenPicker(){
-  const opts=[[10,"١٠"],[20,"٢٠"],[0,"الكل"]];
-  return `<div class="count">عدد الأسئلة: ${opts.map(([v,l])=>`<button type="button" data-n="${v}" aria-pressed="${qlen===v}">${l}</button>`).join("")}</div>`;
+function quizTop(){
+  const scope=[["all","كل المادة"],...LESSONS[subj].map((L,i)=>[String(i),`الدرس ${ar(i+1)}`])];
+  const cur=quizLesson==null?"all":String(quizLesson);
+  const lens=[[10,"١٠"],[20,"٢٠"],[0,"الكل"]];
+  return `<div class="chipbar">${scope.map(([v,l])=>`<button type="button" data-l="${v}" aria-pressed="${cur===v}">${l}</button>`).join("")}</div>
+  <div class="chipbar">عدد الأسئلة: ${lens.map(([v,l])=>`<button type="button" data-n="${v}" aria-pressed="${qlen===v}">${l}</button>`).join("")}</div>`;
 }
-function bindLen(){quizEl.querySelectorAll(".count button").forEach(b=>b.onclick=()=>{qlen=Number(b.dataset.n);store.set("qlen",qlen);quizStart()})}
+function bindTop(){
+  quizEl.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{qlen=Number(b.dataset.n);store.set("qlen",qlen);quizStart()});
+  quizEl.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{quizLesson=b.dataset.l==="all"?null:Number(b.dataset.l);quizStart()});
+}
+const scopeName=()=>quizLesson==null?NAMES[subj]:`${NAMES[subj]} · ${LESSONS[subj][quizLesson].title}`;
 function renderQ(){
   const it=Q[qi];
-  quizEl.innerHTML=`${lenPicker()}
-  <div class="qhead"><span>${NAMES[subj]} · سؤال ${ar(qi+1)} من ${ar(Q.length)}</span><span>الصحيحة: ${ar(score)}</span></div>
+  quizEl.innerHTML=`${quizTop()}
+  <div class="qhead"><span>${scopeName()} · سؤال ${ar(qi+1)} من ${ar(Q.length)}</span><span>الصحيحة: ${ar(score)}</span></div>
   <div class="bar"><i style="width:${qi/Q.length*100}%"></i></div>
   <div class="card">
     <p class="q">${it.q}</p>
@@ -283,7 +447,7 @@ function renderQ(){
     <p class="fb" hidden></p>
     <div class="actions" hidden><button type="button" class="btn" id="next">${qi+1<Q.length?"السؤال التالي":"شوف النتيجة"}</button></div>
   </div>`;
-  bindLen();
+  bindTop();
   const btns=[...quizEl.querySelectorAll(".opt")];
   btns.forEach(b=>b.onclick=()=>{
     const pick=it.opts[b.dataset.i], right=pick===it.a;
@@ -293,48 +457,49 @@ function renderQ(){
     fb.innerHTML=right?`<b class="ok">إجابة صحيحة ✓</b> <span class="ref">· راجعها في الملخص ${it.ref}</span>`:`<b class="bad">إجابة خاطئة ✗</b> الصحيح: <b>${it.a}</b> <span class="ref">· راجعها في الملخص ${it.ref}</span>`;
     quizEl.querySelector(".qhead span:last-child").textContent=`الصحيحة: ${ar(score)}`;
     quizEl.querySelector(".actions").hidden=false;
-    const nx=document.getElementById("next");nx.focus({preventScroll:true});
+    const nx=$("next");nx.focus({preventScroll:true});
     nx.onclick=()=>{qi++;qi<Q.length?renderQ():renderResult()};
   });
 }
 function renderResult(){
   const pct=Math.round(score/Q.length*100);
-  const msg=pct>=90?"ممتاز! أنت جاهز للاختبار":pct>=70?"زين، راجع الأخطاء وتصير ممتاز":pct>=50?"لا بأس، راجع الملخص مرة ثانية":"راجع الملخص وجرب مرة ثانية";
-  quizEl.innerHTML=`${lenPicker()}
+  const msg=pct>=90?"ممتاز! أنت جاهز للاختبار":pct>=70?"زين، راجع الأخطاء وتصير ممتاز":pct>=50?"لا بأس، راجع الدرس مرة ثانية":"راجع الدرس وجرّب مرة ثانية";
+  quizEl.innerHTML=`${quizTop()}
   <div class="bar"><i style="width:100%"></i></div>
   <div class="card">
-    <div class="ref">النتيجة · ${NAMES[subj]}</div>
+    <div class="ref">النتيجة · ${scopeName()}</div>
     <p class="score">${ar(score)} / ${ar(Q.length)}</p>
     <p style="margin:0">${msg}</p>
-    <div class="actions"><button type="button" class="btn" id="again">أسئلة جديدة</button>${wrong.length?`<button type="button" class="btn ghost" id="retry">أعد الأسئلة الخاطئة (${ar(wrong.length)})</button>`:""}</div>
+    <div class="actions"><button type="button" class="btn" id="again">أسئلة جديدة</button>${wrong.length?`<button type="button" class="btn ghost" id="retry">أعد الأسئلة الخاطئة (${ar(wrong.length)})</button>`:""}${quizLesson!=null?`<button type="button" class="btn ghost" id="tolesson">ارجع للدرس</button>`:""}</div>
   </div>
   ${wrong.length?`<div class="card"><b>الأسئلة اللي أخطأت فيها</b><ul class="review">${wrong.map(w=>`<li>${w.q}<span>${w.a}</span><em class="ref">${w.ref}</em></li>`).join("")}</ul></div>`:""}`;
-  bindLen();
-  document.getElementById("again").onclick=quizStart;
-  const r=document.getElementById("retry");
-  if(r)r.onclick=()=>{Q=shuffle(wrong).map(w=>({...w,opts:shuffle(w.opts)}));qi=0;score=0;wrong=[];renderQ()};
+  bindTop();
+  $("again").onclick=quizStart;
+  if($("retry"))$("retry").onclick=()=>{Q=shuffle(wrong).map(w=>({...w,opts:shuffle(w.opts)}));qi=0;score=0;wrong=[];renderQ()};
+  if($("tolesson"))$("tolesson").onclick=()=>{openLesson=quizLesson;go("learn")};
   window.scrollTo({top:0});
 }
 
-/* البداية */
+/* ===== البداية ===== */
 const h=location.hash.slice(1);
 const sv=store.get("subj"), sm=store.get("mode");
-if(NAMES[sv])subj=sv; if(sm==="quiz")mode="quiz";
-if(h==="quiz"||h==="questions")mode="quiz";
+if(NAMES[sv])subj=sv; if(["learn","sum","cards","quiz"].includes(sm))mode=sm;
+const HM={learn:"learn",lessons:"learn",summary:"sum",summaries:"sum",cards:"cards",quiz:"quiz",questions:"quiz"};
+if(HM[h])mode=HM[h];
 if(h==="social"||h==="s")subj="s"; if(h==="tajweed"||h==="t")subj="t";
 update();
 
-/* عارض الصفحات */
-const lb=document.getElementById("lb"),img=document.getElementById("lb-img"),view=document.getElementById("lb-view");
+/* ===== عارض الصفحات ===== */
+const lb=$("lb"),img=$("lb-img"),view=$("lb-view");
 let cur={k:"t",i:1};
-function render(){img.src=`${cur.k}/${pad(cur.i)}.jpg`;img.alt=`${NAMES[cur.k]} – صفحة ${ar(cur.i)}`;document.getElementById("lb-label").textContent=`${NAMES[cur.k]} · ${ar(cur.i)} / ${ar(COUNT[cur.k])}`}
-function openLb(k,i){cur={k,i};view.classList.remove("zoom");document.getElementById("lb-zoom").textContent="تكبير";render();lb.hidden=false;document.body.style.overflow="hidden";document.getElementById("lb-close").focus()}
+function render(){img.src=`${cur.k}/${pad(cur.i)}.jpg`;img.alt=`${NAMES[cur.k]} – صفحة ${ar(cur.i)}`;$("lb-label").textContent=`${NAMES[cur.k]} · ${ar(cur.i)} / ${ar(COUNT[cur.k])}`}
+function openLb(k,i){cur={k,i};view.classList.remove("zoom");$("lb-zoom").textContent="تكبير";render();lb.hidden=false;document.body.style.overflow="hidden";$("lb-close").focus()}
 function closeLb(){lb.hidden=true;document.body.style.overflow=""}
 function step(d){const n=cur.i+d;if(n<1||n>COUNT[cur.k])return;cur.i=n;render();view.scrollTo(0,0)}
-document.getElementById("lb-close").onclick=closeLb;
-document.getElementById("lb-next").onclick=()=>step(1);
-document.getElementById("lb-prev").onclick=()=>step(-1);
-document.getElementById("lb-zoom").onclick=e=>{const z=view.classList.toggle("zoom");e.target.textContent=z?"تصغير":"تكبير";if(z)view.scrollLeft=view.scrollWidth};
+$("lb-close").onclick=closeLb;
+$("lb-next").onclick=()=>step(1);
+$("lb-prev").onclick=()=>step(-1);
+$("lb-zoom").onclick=e=>{const z=view.classList.toggle("zoom");e.target.textContent=z?"تصغير":"تكبير";if(z)view.scrollLeft=view.scrollWidth};
 document.addEventListener("keydown",e=>{if(lb.hidden)return;if(e.key==="Escape")closeLb();if(e.key==="ArrowLeft")step(1);if(e.key==="ArrowRight")step(-1)});
 let sx=null;view.addEventListener("touchstart",e=>{if(!view.classList.contains("zoom"))sx=e.touches[0].clientX},{passive:true});
 view.addEventListener("touchend",e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;sx=null;if(Math.abs(dx)>50)step(dx>0?1:-1)});
