@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>الكتب المحلولة · أول متوسط</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@600;700&family=IBM+Plex+Sans+Arabic:wght@400;600&display=swap">
+<style>
+:root{--bg:#f5f4ef;--surface:#fff;--fg:#1d2422;--muted:#5f6a66;--line:#dcdcd2;--acc:#1f3a6b;--acc-soft:#e5ebf6;--ok:#1f7a4d;--ok-soft:#e3f3ea;--gold:#9a7020;
+--display:"Noto Kufi Arabic","Segoe UI",Tahoma,sans-serif;--body:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#121615;--surface:#1b2120;--fg:#e8ece9;--muted:#9aa5a1;--line:#2c3533;--acc:#8fb0ec;--acc-soft:#1b2436;--ok:#5fcf95;--ok-soft:#173026;--gold:#d9ae55;color-scheme:dark}}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);line-height:1.75}
+.wrap{max-width:900px;margin:0 auto;padding-inline:16px;padding-block:20px 60px;display:flex;flex-direction:column;gap:14px}
+a{color:var(--acc)}
+h1{font-family:var(--display);font-size:clamp(1.4rem,4vw,2rem);margin:0}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:8px;display:flex;flex-direction:column;gap:8px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.seg{display:inline-flex;gap:4px;padding:4px;background:var(--surface);border:1px solid var(--line);border-radius:999px}
+.seg button{appearance:none;border:0;background:none;color:var(--muted);font:inherit;font-weight:600;padding:6px 16px;border-radius:999px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+.nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.nav button,.nav select{font:inherit;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:6px 12px;cursor:pointer}
+.nav input{width:5.5em;font:inherit;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);border-radius:10px;padding:6px 10px}
+.pg{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.pg img{display:block;width:100%;height:auto}
+.sol{background:var(--surface);border:1.5px solid var(--ok);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:12px}
+.sol h2{font-family:var(--display);font-size:1rem;margin:0;color:var(--ok)}
+.q{font-weight:600}
+.a{white-space:pre-line;background:var(--ok-soft);border-radius:10px;padding:8px 12px;margin-top:4px}
+.none{color:var(--muted);font-size:.92rem}
+.hint{color:var(--muted);font-size:.85rem;margin:0}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="row" style="justify-content:space-between"><h1>الكتب المحلولة</h1><a href="./">← الملخصات والأسئلة</a></div>
+  <p class="hint">الصف الأول المتوسط · الفصل الدراسي الأول. اختر الكتاب، واختر «محلول» عشان تطلع الحلول تحت كل صفحة، أو «غير محلول» عشان تحل بنفسك.</p>
+  <div class="bar">
+    <div class="row">
+      <div class="seg" id="books"><button data-b="e" aria-pressed="true">الاجتماعيات</button><button data-b="i" aria-pressed="false">الدراسات الإسلامية</button></div>
+      <div class="seg" id="modes"><button data-m="1" aria-pressed="true">محلول</button><button data-m="0" aria-pressed="false">غير محلول</button></div>
+    </div>
+    <div class="nav">
+      <button id="prev">→ السابقة</button>
+      <span>صفحة</span><input id="num" type="number" min="1" inputmode="numeric"><span id="of"></span>
+      <button id="next">التالية ←</button>
+      <select id="jump" aria-label="انتقل إلى صفحة فيها أسئلة"></select>
+    </div>
+  </div>
+  <div class="pg"><img id="img" alt="" width="1211" height="1454"></div>
+  <section class="sol" id="sol"></section>
+</div>
+<script>const SOL={e:{},i:{}};</script>
+<script src="sol/e1.js"></script><script src="sol/e2.js"></script><script src="sol/e3.js"></script>
+<script src="sol/e4a.js"></script><script src="sol/e4b.js"></script><script src="sol/e5.js"></script>
+<script src="sol/e6.js"></script><script src="sol/e7.js"></script><script src="sol/e8.js"></script>
+<script src="sol/i1.js"></script><script src="sol/i2.js"></script><script src="sol/i3.js"></script>
+<script>
+const N={e:258,i:246},NAME={e:"الاجتماعيات",i:"الدراسات الإسلامية"};
+const ar=n=>n.toLocaleString("ar-SA");
+const st={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let book=st.get("bk")==="i"?"i":"e", solved=st.get("bm")!=="0", page=Number(st.get("bp_"+book))||1;
+const $=id=>document.getElementById(id);
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+function render(){
+  page=Math.min(Math.max(1,page),N[book]);
+  document.querySelectorAll("#books button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.b===book));
+  document.querySelectorAll("#modes button").forEach(b=>b.setAttribute("aria-pressed",(b.dataset.m==="1")===solved));
+  $("img").src=`b/${book}/${String(page).padStart(3,"0")}.webp`;$("img").alt=`${NAME[book]} – صفحة ${ar(page)} من ملف الكتاب`;
+  $("num").value=page;$("num").max=N[book];$("of").textContent=`من ${ar(N[book])}`;
+  const list=SOL[book][page], keys=Object.keys(SOL[book]).map(Number).sort((a,b)=>a-b);
+  $("jump").innerHTML=`<option value="">صفحات فيها أسئلة (${ar(keys.length)})</option>`+keys.map(k=>`<option value="${k}" ${k===page?"selected":""}>صفحة ${ar(k)}</option>`).join("");
+  const s=$("sol");
+  if(!solved){s.hidden=true}
+  else{s.hidden=false;s.innerHTML=list?`<h2>حلول هذه الصفحة</h2>`+list.map(([q,a])=>`<div><div class="q">${esc(q)}</div><div class="a">${esc(a)}</div></div>`).join(""):`<p class="none">ما فيه أسئلة في هذه الصفحة. استخدم قائمة «صفحات فيها أسئلة» عشان تنتقل للصفحات اللي فيها حلول.</p>`}
+  st.set("bk",book);st.set("bm",solved?"1":"0");st.set("bp_"+book,page);
+}
+document.querySelectorAll("#books button").forEach(b=>b.onclick=()=>{book=b.dataset.b;page=Number(st.get("bp_"+book))||1;render()});
+document.querySelectorAll("#modes button").forEach(b=>b.onclick=()=>{solved=b.dataset.m==="1";render()});
+$("prev").onclick=()=>{page--;render();scrollTo({top:0})};
+$("next").onclick=()=>{page++;render();scrollTo({top:0})};
+$("num").onchange=()=>{page=Number($("num").value)||1;render()};
+$("jump").onchange=()=>{if($("jump").value){page=Number($("jump").value);render();scrollTo({top:0})}};
+render();
+</script>
+</body>
+</html>
