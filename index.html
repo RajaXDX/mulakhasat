@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>ملخصات أول متوسط</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<style>
+/* Layout: a study binder — a short header, two subject tabs, then the summary pages stacked like sheets in a folder */
+:root{
+  --bg:#f5f4ef; --surface:#ffffff; --fg:#1d2422; --muted:#5f6a66; --line:#dcdcd2;
+  --tajweed:#14463a; --tajweed-soft:#e6efe9; --social:#1f3a6b; --social-soft:#e5ebf6; --gold:#b98a2c;
+  --display:"Noto Kufi Arabic", "Segoe UI", Tahoma, sans-serif;
+  --body:"IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121615; --surface:#1b2120; --fg:#e8ece9; --muted:#9aa5a1; --line:#2c3533;
+  --tajweed:#6fc2a5; --tajweed-soft:#1b2c27; --social:#8fb0ec; --social-soft:#1b2436; --gold:#d9ae55; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121615; --surface:#1b2120; --fg:#e8ece9; --muted:#9aa5a1; --line:#2c3533;
+  --tajweed:#6fc2a5; --tajweed-soft:#1b2c27; --social:#8fb0ec; --social-soft:#1b2436; --gold:#d9ae55; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.7}
+.wrap{max-width:1100px;margin:0 auto;padding-inline:16px;padding-block:28px 56px;display:flex;flex-direction:column;gap:22px}
+header{display:flex;flex-direction:column;gap:6px}
+.eyebrow{font-size:.82rem;color:var(--gold);font-weight:600;letter-spacing:.02em}
+h1{font-family:var(--display);font-size:clamp(1.6rem,4.5vw,2.4rem);line-height:1.35;margin:0;text-wrap:balance}
+.lead{margin:0;color:var(--muted);max-width:60ch}
+
+.tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:8px}
+.tab{appearance:none;border:1.5px solid var(--line);background:var(--surface);color:var(--fg);border-radius:12px;padding:12px 14px;font:inherit;text-align:right;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tab b{font-family:var(--display);font-size:1.05rem;font-weight:700}
+.tab span{font-size:.82rem;color:var(--muted)}
+.tab[data-s="t"][aria-selected="true"]{border-color:var(--tajweed);background:var(--tajweed-soft)}
+.tab[data-s="t"][aria-selected="true"] b{color:var(--tajweed)}
+.tab[data-s="s"][aria-selected="true"]{border-color:var(--social);background:var(--social-soft)}
+.tab[data-s="s"][aria-selected="true"] b{color:var(--social)}
+.tab:focus-visible,.sheet button:focus-visible,.lb button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+.panel{display:flex;flex-direction:column;gap:18px}
+.hint{font-size:.85rem;color:var(--muted);margin:0}
+.sheet{margin:0;display:flex;flex-direction:column;gap:6px}
+.sheet button{all:unset;cursor:zoom-in;display:block;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#fff;box-shadow:0 1px 2px rgb(0 0 0 / .06)}
+.sheet img{display:block;width:100%;height:auto;aspect-ratio:16/9}
+.sheet figcaption{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+
+.lb{position:fixed;inset:0;background:rgb(10 12 12 / .94);z-index:20;display:flex;flex-direction:column}
+.lb-bar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top,0px));color:#fff;font-size:.9rem}
+.lb-bar .grp{display:flex;gap:8px}
+.lb button{appearance:none;border:1px solid rgb(255 255 255 / .3);background:rgb(255 255 255 / .08);color:#fff;border-radius:8px;padding:6px 12px;font:inherit;cursor:pointer}
+.lb-view{flex:1;overflow:auto;-webkit-overflow-scrolling:touch;display:flex;align-items:center;justify-content:center;padding:8px}
+.lb-view img{max-width:100%;max-height:100%;height:auto}
+.lb-view.zoom{display:block}
+.lb-view.zoom img{max-width:none;max-height:none;width:1920px}
+@media (max-width:600px){.lb-view.zoom img{width:1600px}}
+</style>
+</head>
+<body>
+
+<div class="wrap" dir="rtl" lang="ar">
+  <header>
+    <div class="eyebrow">الصف الأول المتوسط · الفصل الدراسي الأول</div>
+    <h1>ملخصات التجويد والاجتماعيات</h1>
+    <p class="lead">ملخصات مبسّطة للتحديد. اختر المادة، واضغط على أي صفحة لتكبيرها.</p>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-t" data-s="t" aria-selected="true" aria-controls="panel-t"><b>التجويد</b><span>من ص ٩ إلى ص ٢٦ · ١٠ صفحات</span></button>
+    <button class="tab" role="tab" id="tab-s" data-s="s" aria-selected="false" aria-controls="panel-s"><b>الاجتماعيات</b><span>من ص ١٢ إلى ص ٦١ · ١٦ صفحة</span></button>
+  </div>
+
+  <section class="panel" id="panel-t" role="tabpanel" aria-labelledby="tab-t"></section>
+  <section class="panel" id="panel-s" role="tabpanel" aria-labelledby="tab-s" hidden></section>
+</div>
+
+<div class="lb" id="lb" hidden dir="rtl">
+  <div class="lb-bar">
+    <span id="lb-label"></span>
+    <div class="grp">
+      <button id="lb-prev" type="button">السابقة</button>
+      <button id="lb-next" type="button">التالية</button>
+      <button id="lb-zoom" type="button">تكبير</button>
+      <button id="lb-close" type="button">إغلاق</button>
+    </div>
+  </div>
+  <div class="lb-view" id="lb-view"><img id="lb-img" alt=""></div>
+</div>
+
+<script>
+const subjects={t:{name:"التجويد",count:10},s:{name:"الاجتماعيات",count:16}};
+const ar=n=>n.toLocaleString("ar-SA");
+const pad=n=>String(n).padStart(2,"0");
+for(const [k,s] of Object.entries(subjects)){
+  const panel=document.getElementById("panel-"+k);
+  for(let i=1;i<=s.count;i++){
+    const fig=document.createElement("figure");fig.className="sheet";
+    fig.innerHTML=`<button type="button" aria-label="تكبير صفحة ${ar(i)} من ${s.name}"><img src="${k}/${pad(i)}.jpg" width="1920" height="1080" alt="${s.name} – صفحة ${ar(i)}" ${i>2?'loading="lazy"':''}></button><figcaption>صفحة ${ar(i)} من ${ar(s.count)}</figcaption>`;
+    fig.querySelector("button").onclick=()=>openLb(k,i);
+    panel.appendChild(fig);
+  }
+}
+const tabs=[...document.querySelectorAll(".tab")];
+function show(k){
+  tabs.forEach(t=>t.setAttribute("aria-selected",t.dataset.s===k));
+  for(const id of Object.keys(subjects)) document.getElementById("panel-"+id).hidden=id!==k;
+  try{localStorage.setItem("subj",k)}catch(e){}
+}
+tabs.forEach(t=>t.onclick=()=>{show(t.dataset.s);window.scrollTo({top:0})});
+const h=location.hash.slice(1);
+let saved=null;try{saved=localStorage.getItem("subj")}catch(e){}
+if(h==="social"||h==="s")show("s");else if(h==="tajweed"||h==="t")show("t");else if(saved&&subjects[saved])show(saved);
+
+const lb=document.getElementById("lb"),img=document.getElementById("lb-img"),view=document.getElementById("lb-view");
+let cur={k:"t",i:1};
+function render(){
+  const s=subjects[cur.k];
+  img.src=`${cur.k}/${pad(cur.i)}.jpg`;img.alt=`${s.name} – صفحة ${ar(cur.i)}`;
+  document.getElementById("lb-label").textContent=`${s.name} · ${ar(cur.i)} / ${ar(s.count)}`;
+}
+function openLb(k,i){cur={k,i};view.classList.remove("zoom");document.getElementById("lb-zoom").textContent="تكبير";render();lb.hidden=false;document.body.style.overflow="hidden";document.getElementById("lb-close").focus()}
+function closeLb(){lb.hidden=true;document.body.style.overflow=""}
+function step(d){const n=cur.i+d;if(n<1||n>subjects[cur.k].count)return;cur.i=n;render();view.scrollTo(0,0)}
+document.getElementById("lb-close").onclick=closeLb;
+document.getElementById("lb-next").onclick=()=>step(1);
+document.getElementById("lb-prev").onclick=()=>step(-1);
+document.getElementById("lb-zoom").onclick=e=>{const z=view.classList.toggle("zoom");e.target.textContent=z?"تصغير":"تكبير";if(z)view.scrollLeft=view.scrollWidth};
+document.addEventListener("keydown",e=>{if(lb.hidden)return;if(e.key==="Escape")closeLb();if(e.key==="ArrowLeft")step(1);if(e.key==="ArrowRight")step(-1)});
+let sx=null;view.addEventListener("touchstart",e=>{if(!view.classList.contains("zoom"))sx=e.touches[0].clientX},{passive:true});
+view.addEventListener("touchend",e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;sx=null;if(Math.abs(dx)>50)step(dx>0?1:-1)});
+</script>
+</body>
+</html>
